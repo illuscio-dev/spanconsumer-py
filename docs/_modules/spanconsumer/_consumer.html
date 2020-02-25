@@ -1,0 +1,780 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>spanconsumer._consumer &mdash; spanconsumer 0.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> spanconsumer
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart_scribe.html">Quick Start - Scribe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart_consumer.html">Quick Start - Consumer Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_doc.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">spanconsumer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>spanconsumer._consumer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for spanconsumer._consumer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">aio_pika</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span>
+<span class="kn">from</span> <span class="nn">spantools</span> <span class="kn">import</span> <span class="n">EncoderType</span><span class="p">,</span> <span class="n">DecoderType</span><span class="p">,</span> <span class="n">MimeTypeTolerant</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+
+
+<span class="kn">from</span> <span class="nn">._incoming_outgoing</span> <span class="kn">import</span> <span class="n">Incoming</span><span class="p">,</span> <span class="n">Outgoing</span><span class="p">,</span> <span class="n">NOT_LOADED</span>
+<span class="kn">from</span> <span class="nn">._test_client</span> <span class="kn">import</span> <span class="n">TestClient</span>
+<span class="kn">from</span> <span class="nn">._errors</span> <span class="kn">import</span> <span class="n">ProcessorError</span><span class="p">,</span> <span class="n">ConsumerStop</span>
+<span class="kn">from</span> <span class="nn">._scribe</span> <span class="kn">import</span> <span class="n">SpanScribe</span><span class="p">,</span> <span class="n">ConnectionSettings</span>
+<span class="kn">from</span> <span class="nn">._configuration</span> <span class="kn">import</span> <span class="n">QueueOptions</span><span class="p">,</span> <span class="n">ProcessingOptions</span><span class="p">,</span> <span class="n">ProcessorSettings</span>
+<span class="kn">from</span> <span class="nn">._types</span> <span class="kn">import</span> <span class="n">ProcessorType</span><span class="p">,</span> <span class="n">WrappedProcessorType</span><span class="p">,</span> <span class="n">TaskType</span><span class="p">,</span> <span class="n">ErrorHandlerType</span>
+
+
+<span class="n">SHUTDOWN_ERRORS</span> <span class="o">=</span> <span class="p">(</span><span class="ne">KeyboardInterrupt</span><span class="p">,</span> <span class="n">ConsumerStop</span><span class="p">)</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Lifecycle</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Holds objects that only persist during a lifecycle.&quot;&quot;&quot;</span>
+
+    <span class="n">scribe</span><span class="p">:</span> <span class="n">SpanScribe</span>
+    <span class="sd">&quot;&quot;&quot;The scribe handling this incarnation of the service.&quot;&quot;&quot;</span>
+    <span class="n">event_startup</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Event set when the Consumer is started.&quot;&quot;&quot;</span>
+    <span class="n">event_startup_complete</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Event set when the Consumer startup completes successfully.&quot;&quot;&quot;</span>
+    <span class="n">event_startup_error</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Flag set to true if there is an error during startup.&quot;&quot;&quot;</span>
+    <span class="n">event_shutdown</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Event set when the Consumer shutdown starts.&quot;&quot;&quot;</span>
+    <span class="n">event_shutdown_complete</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Event set then the shutdown finished successfully.&quot;&quot;&quot;</span>
+    <span class="n">event_signal_shutdown</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Use to signal that the service should be shut down.&quot;&quot;&quot;</span>
+    <span class="n">event_loop_stopped</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Used to signal that the loop has been stopped.&quot;&quot;&quot;</span>
+    <span class="n">lock_shutdown</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Threading lock held during a shutdown process.&quot;&quot;&quot;</span>
+    <span class="n">worker_lock</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;The number of current workers handling requests.&quot;&quot;&quot;</span>
+    <span class="n">task_shutdown</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;Shut down asyncio task.&quot;&quot;&quot;</span>
+
+
+<span class="c1"># Because a new scribe is generated for each life-cycle of the app, we need to remember</span>
+<span class="c1"># all the encoder to register upon each startup.</span>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MimeTypeRegistration</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Used to hold custom encoder / decoder information for the service.&quot;&quot;&quot;</span>
+
+    <span class="n">mimetype</span><span class="p">:</span> <span class="n">MimeTypeTolerant</span>
+    <span class="sd">&quot;&quot;&quot;Mimetype this encoder / decoder handles.&quot;&quot;&quot;</span>
+    <span class="n">encoder</span><span class="p">:</span> <span class="n">EncoderType</span>
+    <span class="sd">&quot;&quot;&quot;Encoder function.&quot;&quot;&quot;</span>
+    <span class="n">decoder</span><span class="p">:</span> <span class="n">DecoderType</span>
+    <span class="sd">&quot;&quot;&quot;Decoder function.&quot;&quot;&quot;</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ConsumerSettings</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;Name of service passed to init. Filled with a random uuid if left blank.&quot;&quot;&quot;</span>
+    <span class="n">connection</span><span class="p">:</span> <span class="n">ConnectionSettings</span>
+    <span class="sd">&quot;&quot;&quot;Connection settings for service.&quot;&quot;&quot;</span>
+    <span class="n">startup_tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TaskType</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;&quot;List of functions to run on startup&quot;&quot;&quot;</span>
+    <span class="n">shutdown_tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TaskType</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;&quot;List of functions to run on shutdown&quot;&quot;&quot;</span>
+    <span class="n">error_handlers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ErrorHandlerType</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Global error handler list&quot;&quot;&quot;</span>
+    <span class="n">prefetch_count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;Number of messages the service will handle simultaneously.&quot;&quot;&quot;</span>
+    <span class="n">queue_processors</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ProcessorSettings</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Processor settings for each processor added to sthe service.&quot;&quot;&quot;</span>
+    <span class="n">mimetype_handlers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MimeTypeRegistration</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="SpanConsumer"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer">[docs]</a><span class="k">class</span> <span class="nc">SpanConsumer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Consumer service framework. Connects to rabbit and handles messages.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">connection_settings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConnectionSettings</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">prefetch_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param name: for service.</span>
+<span class="sd">        :param connection_settings: for rabbit connection. When None, default connection</span>
+<span class="sd">            settings are used.</span>
+<span class="sd">        :param prefetch_count: number of rabbit messages to process at once.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">connection_settings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">connection_settings</span> <span class="o">=</span> <span class="n">ConnectionSettings</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">ConsumerSettings</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">connection</span><span class="o">=</span><span class="n">connection_settings</span><span class="p">,</span>
+            <span class="n">startup_tasks</span><span class="o">=</span><span class="nb">list</span><span class="p">(),</span>
+            <span class="n">shutdown_tasks</span><span class="o">=</span><span class="nb">list</span><span class="p">(),</span>
+            <span class="n">error_handlers</span><span class="o">=</span><span class="nb">list</span><span class="p">(),</span>
+            <span class="n">prefetch_count</span><span class="o">=</span><span class="n">prefetch_count</span><span class="p">,</span>
+            <span class="n">queue_processors</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
+            <span class="n">mimetype_handlers</span><span class="o">=</span><span class="nb">list</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Consumer Service settings.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lifecycle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Lifecycle</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;Holds resources for one run of the consumer.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;Holds logger for service.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lifecycle</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the current or last used lifecycle.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lifecycle</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Consumer has not been started.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lifecycle</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Event loop consumer is running on.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">loop</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Logger the service uses. Can be referenced by processors.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self.settings.name}</span><span class="s2">_INFO&quot;</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;INFO: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self.settings.name}</span><span class="s2">_INFO&quot;</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span>
+
+<div class="viewcode-block" id="SpanConsumer.reset"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reset service lifecycle after shutdown</span>
+
+<span class="sd">        :raises RuntimeError: If service has not been shutdown.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_shutdown_complete</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot reset service that was not shutdown.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Remove lifecycle.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lifecycle</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_process_message</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="n">ProcessorSettings</span><span class="p">,</span> <span class="n">incoming</span><span class="p">:</span> <span class="n">Incoming</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">out_key</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">settings</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">get_queue</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">out_key</span><span class="p">)</span>
+
+        <span class="c1"># set up args based on incoming / outgoing key declarations.</span>
+        <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">out_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">outgoing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Outgoing</span><span class="p">]</span> <span class="o">=</span> <span class="n">Outgoing</span><span class="p">(</span>
+                <span class="n">_encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">_encoders</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">out_schema</span>
+            <span class="p">)</span>
+            <span class="n">outgoing</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Outgoing</span><span class="p">,</span> <span class="n">outgoing</span><span class="p">)</span>
+            <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Incoming</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Incoming</span><span class="p">,</span> <span class="n">Outgoing</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">incoming</span><span class="p">,</span>
+                <span class="n">outgoing</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outgoing</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">incoming</span><span class="p">,)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">settings</span><span class="o">.</span><span class="n">worker</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="c1"># Here we are going to raise an exception with the incoming and outgoing</span>
+            <span class="c1"># objects so that the error handler has access to them.</span>
+            <span class="k">raise</span> <span class="n">ProcessorError</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">incoming</span><span class="p">,</span> <span class="n">outgoing</span><span class="p">)</span>
+
+        <span class="c1"># Handle outgoing messages</span>
+        <span class="k">if</span> <span class="n">outgoing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">outgoing</span><span class="o">.</span><span class="n">media</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">NOT_LOADED</span><span class="p">:</span>
+            <span class="n">out_key</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">out_key</span><span class="p">)</span>
+
+            <span class="k">await</span> <span class="n">settings</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">put_message</span><span class="p">(</span>
+                <span class="n">message</span><span class="o">=</span><span class="n">outgoing</span><span class="p">,</span> <span class="n">routing_key</span><span class="o">=</span><span class="n">out_key</span>
+            <span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_process_message_context</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="n">ProcessorSettings</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">IncomingMessage</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Processes an incoming message, passing in incoming and outgoing objects, and</span>
+<span class="sd">        handling any outgoing passing to the output message queue.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Context block so the consumer can set ignore processed. NOTE: aio-pika has</span>
+        <span class="c1"># a bas return type, so we need to manually set the more accurate type rather</span>
+        <span class="c1"># than the generic &#39;Async Manager&#39; it uses.</span>
+        <span class="n">message_context</span><span class="p">:</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">ProcessContext</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="o">**</span><span class="n">settings</span><span class="o">.</span><span class="n">processing_options</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="p">)</span>
+
+        <span class="k">async</span> <span class="k">with</span> <span class="n">message_context</span><span class="p">:</span>
+            <span class="n">reject</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="n">incoming</span><span class="p">:</span> <span class="n">Incoming</span> <span class="o">=</span> <span class="n">Incoming</span><span class="p">(</span>
+                <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
+                <span class="n">schema</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">in_schema</span><span class="p">,</span>
+                <span class="n">_decoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">_decoders</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_message</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">incoming</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="c1"># Handle rejecting quorum queue messages that have hit the max error</span>
+                <span class="c1"># count.</span>
+                <span class="n">max_count</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">processing_options</span><span class="o">.</span><span class="n">max_delivery_count</span>
+                <span class="n">is_final_delivery</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">message</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x-delivery-count&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="o">&gt;=</span> <span class="n">settings</span><span class="o">.</span><span class="n">processing_options</span><span class="o">.</span><span class="n">max_delivery_count</span>
+                <span class="p">)</span>
+
+                <span class="c1"># If we are using quorum queues hand have a max retry value, reject the</span>
+                <span class="c1"># the message instead of re-queuing it.</span>
+                <span class="k">if</span> <span class="n">is_final_delivery</span> <span class="ow">and</span> <span class="n">max_count</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">reject</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="k">raise</span> <span class="n">error</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">reject</span> <span class="ow">or</span> <span class="n">incoming</span><span class="o">.</span><span class="n">reject</span><span class="p">:</span>
+                    <span class="c1"># Tell the context the  message gas been processed so it doesn&#39;t</span>
+                    <span class="c1"># throw an error.</span>
+                    <span class="n">message</span><span class="o">.</span><span class="n">reject</span><span class="p">()</span>
+                    <span class="n">message_context</span><span class="o">.</span><span class="n">ignore_processed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_handle_processor_error</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="ne">BaseException</span><span class="p">,</span> <span class="n">processor_settings</span><span class="p">:</span> <span class="n">ProcessorSettings</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handle error from a processor task.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">ProcessorError</span><span class="p">):</span>
+            <span class="n">print_error</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">error</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">print_error</span> <span class="o">=</span> <span class="n">error</span>
+
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exception</span><span class="p">(</span>
+            <span class="n">print_error</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">print_error</span><span class="p">,</span> <span class="n">print_error</span><span class="o">.</span><span class="n">__traceback__</span>
+        <span class="p">)</span>
+        <span class="n">formatted_exc</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;ERROR AROUND &#39;</span><span class="si">{processor_settings.worker.__name__}</span><span class="s2">&#39;:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{formatted_exc}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">error_handlers</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">handler</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">processor_settings</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">new_error</span><span class="p">:</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exception</span><span class="p">(</span>
+                    <span class="n">new_error</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">new_error</span><span class="p">,</span> <span class="n">new_error</span><span class="o">.</span><span class="n">__traceback__</span>
+                <span class="p">)</span>
+                <span class="n">formatted_exc</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;COULD NOT HANDLE &#39;</span><span class="si">{error.__class__.__name__}</span><span class="s2">&#39; &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;WITH &#39;</span><span class="si">{handler.__name__}</span><span class="s2">&#39;:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{formatted_exc}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+<div class="viewcode-block" id="SpanConsumer.processor"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.processor">[docs]</a>    <span class="k">def</span> <span class="nf">processor</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">in_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">out_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">in_schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Schema</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">out_schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Schema</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">queue_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueueOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">processing_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ProcessingOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Decorator for message processing function. Registers function with service.</span>
+
+<span class="sd">        :param in_key: Input routing key / queue name to pull messages from.</span>
+<span class="sd">        :param out_key: Output routing key / queue name to send messages to with</span>
+<span class="sd">            outgoing object body as message body.</span>
+<span class="sd">        :param in_schema: Schema or function to use when decoding incoming message body.</span>
+<span class="sd">        :param out_schema: Schema or function to use when encoding outgoing message</span>
+<span class="sd">            body.</span>
+<span class="sd">        :param queue_options: Options for pika queue creation.</span>
+<span class="sd">        :param processing_options: Options for pika message processing.</span>
+
+<span class="sd">        Decorated functions must:</span>
+
+<span class="sd">            - Return None.</span>
+
+<span class="sd">            - Accept a :class:`Incoming` object as their first argument.</span>
+
+<span class="sd">            - Accept a :class:`Outgoing` object as their second argument.</span>
+
+<span class="sd">        No other arguments are passed to the function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">processing_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">processing_options</span> <span class="o">=</span> <span class="n">ProcessingOptions</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">worker</span><span class="p">:</span> <span class="n">ProcessorType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WrappedProcessorType</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Decorator object. Wraps function.</span>
+<span class="sd">            :param worker: Processor function.</span>
+<span class="sd">            :return: Wrapped processor function.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">queue_processors</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor for </span><span class="si">{in_key}</span><span class="s2"> exists&quot;</span><span class="p">)</span>
+
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">processing_options</span><span class="p">,</span> <span class="n">ProcessingOptions</span><span class="p">)</span>
+
+            <span class="n">settings</span> <span class="o">=</span> <span class="n">ProcessorSettings</span><span class="p">(</span>
+                <span class="n">consumer</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">worker</span><span class="o">=</span><span class="n">worker</span><span class="p">,</span>
+                <span class="n">in_key</span><span class="o">=</span><span class="n">in_key</span><span class="p">,</span>
+                <span class="n">out_key</span><span class="o">=</span><span class="n">out_key</span><span class="p">,</span>
+                <span class="n">in_schema</span><span class="o">=</span><span class="n">in_schema</span><span class="p">,</span>
+                <span class="n">out_schema</span><span class="o">=</span><span class="n">out_schema</span><span class="p">,</span>
+                <span class="n">queue_options</span><span class="o">=</span><span class="n">queue_options</span><span class="p">,</span>
+                <span class="n">processing_options</span><span class="o">=</span><span class="n">processing_options</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">async</span> <span class="k">def</span> <span class="nf">processor_wrapper</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">IncomingMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="sd">&quot;&quot;&quot;Processes a rabbit message.&quot;&quot;&quot;</span>
+                <span class="c1"># Handle the message context so the decorated method doesn&#39;t have to</span>
+                <span class="c1"># We are going to increment the worker lock on this thread. NOTE:</span>
+                <span class="c1"># We will need to refactor this if multiprocess-based workers are</span>
+                <span class="c1"># ever introduced.</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">worker_lock</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_message_context</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_processor_error</span><span class="p">(</span>
+                            <span class="n">error</span><span class="p">,</span> <span class="n">processor_settings</span><span class="o">=</span><span class="n">settings</span>
+                        <span class="p">)</span>
+
+                    <span class="c1"># Check to see if a stop order has been sent, if so we are going to</span>
+                    <span class="c1"># exit this consumer.</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_signal_shutdown</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;STOP REQUEST RECEIVED BY ASYNC WORKER.&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">ConsumerStop</span><span class="p">(</span><span class="s2">&quot;Consumer stop requested. Exiting worker.&quot;</span><span class="p">)</span>
+
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s2">&quot;processor&quot;</span><span class="p">,</span> <span class="n">processor_wrapper</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">queue_processors</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">settings</span>
+            <span class="k">return</span> <span class="n">processor_wrapper</span>
+
+        <span class="k">return</span> <span class="n">decorator</span></div>
+
+<div class="viewcode-block" id="SpanConsumer.register_mimetype"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.register_mimetype">[docs]</a>    <span class="k">def</span> <span class="nf">register_mimetype</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">:</span> <span class="n">MimeTypeTolerant</span><span class="p">,</span> <span class="n">encoder</span><span class="p">:</span> <span class="n">EncoderType</span><span class="p">,</span> <span class="n">decoder</span><span class="p">:</span> <span class="n">DecoderType</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Registers encoder and decoder function for a given mimetype.</span>
+
+<span class="sd">        :param mimetype: to register for ex: ``&#39;text/csv&#39;``.</span>
+<span class="sd">        :param encoder: Encodes mimetype data to binary.</span>
+<span class="sd">        :param decoder: Decodes mimetype data to binary.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">registration</span> <span class="o">=</span> <span class="n">MimeTypeRegistration</span><span class="p">(</span>
+            <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span> <span class="n">encoder</span><span class="o">=</span><span class="n">encoder</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">decoder</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">mimetype_handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">registration</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpanConsumer.add_error_handler"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.add_error_handler">[docs]</a>    <span class="k">def</span> <span class="nf">add_error_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">ErrorHandlerType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds ``handler`` as error handler for errors that occur when processing a</span>
+<span class="sd">        message.</span>
+
+<span class="sd">        :param handler: Coroutine to add.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">error_handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpanConsumer.on_error"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.on_error">[docs]</a>    <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">ErrorHandlerType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ErrorHandlerType</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Decorator that adds function as error handler.</span>
+
+<span class="sd">        :param handler: Coroutine to add.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_error_handler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">handler</span></div>
+
+<div class="viewcode-block" id="SpanConsumer.add_startup_task"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.add_startup_task">[docs]</a>    <span class="k">def</span> <span class="nf">add_startup_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds ``task`` as function to be run during startup, after rabbit connection and</span>
+<span class="sd">        queues are established.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">startup_tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpanConsumer.on_startup"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.on_startup">[docs]</a>    <span class="k">def</span> <span class="nf">on_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskType</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Decorator. Adds ``task`` as function to be run during startup, after rabbit</span>
+<span class="sd">        connection and queues are established.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_startup_task</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">task</span></div>
+
+<div class="viewcode-block" id="SpanConsumer.add_shutdown_task"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.add_shutdown_task">[docs]</a>    <span class="k">def</span> <span class="nf">add_shutdown_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds ``task`` as function to be run during shutdown, before rabbit connection</span>
+<span class="sd">        is closed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">shutdown_tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpanConsumer.on_shutdown"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.on_shutdown">[docs]</a>    <span class="k">def</span> <span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskType</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Decorator. Adds ``task`` as function to be run during shutdown, before rabbit</span>
+<span class="sd">        connection is closed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_shutdown_task</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">task</span></div>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_run_startup_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># We don&#39;t want to guard against errors here so we can abort startup if one of</span>
+        <span class="c1"># the tasks runs into an error.</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">startup_tasks</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PERFORMING TASK: </span><span class="si">{task.__name__}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">task</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_run_shutdown_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Unlike startup tasks, we don&#39;t want to skip a shutdown task if a different</span>
+        <span class="c1"># task runs into problems. We need to make sure that we can clean up as best we</span>
+        <span class="c1"># can.</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">shutdown_tasks</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PERFORMING TASK: </span><span class="si">{task.__name__}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">task</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;ERROR DURING SHUTDOWN TASK (</span><span class="si">{task.__name__}</span><span class="s2">) &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{error.__class__.__name__}</span><span class="s2">: {str(error)}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;STACK TRACE</span><span class="se">\n</span><span class="s2">{traceback.format_exc()}&quot;</span>
+                <span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_start_up</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Sets up service rabbit connection and queue consumers.&quot;&quot;&quot;</span>
+        <span class="c1"># Connect</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">connect_to_rabbit</span><span class="p">()</span>
+
+        <span class="c1"># Creating channel</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">get_channel</span><span class="p">()</span>
+
+        <span class="c1"># Maximum message count which will be</span>
+        <span class="c1"># processing at the same time.</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">set_qos</span><span class="p">(</span>
+            <span class="n">prefetch_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">prefetch_count</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Declaring queues</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">settings</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">queue_processors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">queue</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">get_queue</span><span class="p">(</span>
+                <span class="n">name</span><span class="p">,</span> <span class="n">queue_options</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">queue_options</span>
+            <span class="p">)</span>
+            <span class="k">await</span> <span class="n">queue</span><span class="o">.</span><span class="n">consume</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">processor</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_startup_tasks</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_startup_complete</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Handles shutdown tasks. Scheduled on startup and awaits shutdown signal.&quot;&quot;&quot;</span>
+        <span class="c1"># Wait for the shutdown signal to be sent</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_signal_shutdown</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_shutdown</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SHUTDOWN SIGNAL RECEIVED&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SHUTTING DOWN &#39;</span><span class="si">{self.settings.name}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_shutdown_tasks</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CLOSING RABBITMQ CONNECTION&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">close_connection</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SpanConsumer.signal_shutdown"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.signal_shutdown">[docs]</a>    <span class="k">def</span> <span class="nf">signal_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Signal the service to be shutdown.&quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SIGNALING SHUTDOWN&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">call_soon_threadsafe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_signal_shutdown</span><span class="o">.</span><span class="n">set</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_clean_up_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Cleans up event loop.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CLEANING UP&quot;</span><span class="p">)</span>
+
+        <span class="n">tasks</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">all_tasks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_main</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CONFIGURING LIFECYCLE&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Get the current event loop. NOTE: this loop will be closed upon service exit.</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+
+        <span class="c1"># Create a new lifecycle for this run. We create a lifecycle-per-run so that</span>
+        <span class="c1"># lifecycle events are unique to each run and the entire event loop is cleaned</span>
+        <span class="c1"># up and closed. This ensures that no dangling futures are executed on a restart</span>
+        <span class="c1"># of the consumer.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lifecycle</span> <span class="o">=</span> <span class="n">Lifecycle</span><span class="p">(</span><span class="n">scribe</span><span class="o">=</span><span class="n">SpanScribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">connection</span><span class="p">,</span> <span class="n">loop</span><span class="p">),)</span>
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">mimetype_handlers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lifecycle</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">register_mimetype</span><span class="p">(</span>
+                <span class="n">mimetype</span><span class="o">=</span><span class="n">handler</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span>
+                <span class="n">encoder</span><span class="o">=</span><span class="n">handler</span><span class="o">.</span><span class="n">encoder</span><span class="p">,</span>
+                <span class="n">decoder</span><span class="o">=</span><span class="n">handler</span><span class="o">.</span><span class="n">decoder</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Signal that we are starting up.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_startup</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+
+        <span class="c1"># Run startup - makes a rabbitmq connection and runs startup tasks.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;STARTING UP &#39;</span><span class="si">{self.settings.name}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_up</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;STARTUP FAILED&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+            <span class="c1"># Signal there was an error during startup.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_startup_error</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># Signal that startup has completed, regardless of whether there was a</span>
+            <span class="c1"># startup error.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_startup_complete</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+
+        <span class="c1"># Schedule a task to wait on the shutdown signal.</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shutdown</span><span class="p">(),</span> <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+
+        <span class="c1"># If there was an error during startup we need to abort and signal a shutdown.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_startup_error</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">signal_shutdown</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RUNNING &#39;</span><span class="si">{self.settings.name}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Run the loop. If we encountered an error during startup, this will trigger</span>
+        <span class="c1"># an immediate shutdown.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;KEYBOARD INTERRUPT ISSUED&quot;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># At the end of the shutdown, we can clean up and close the loop.</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">lock_shutdown</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_clean_up_loop</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SHUT DOWN COMPLETE&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpanConsumer.run"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Run the service.&quot;&quot;&quot;</span>
+        <span class="c1"># We need to handle potential errors here so we don&#39;t crash tests if something</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># Signal that shutdown has fully completed.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_shutdown_complete</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SpanConsumer.test_client"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanConsumer.test_client">[docs]</a>    <span class="k">def</span> <span class="nf">test_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delete_queues</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TestClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns test client for use in a context block for testing service.</span>
+<span class="sd">        NOTE: The connection is not mocked. To make use of this client, a running rabbit</span>
+<span class="sd">        connection must be reachable by the testing program.</span>
+
+<span class="sd">        :param delete_queues: True: relevant queues are deleted before returning the</span>
+<span class="sd">            test client so tests can be entered with a clean slate.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">TestClient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delete_queues</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright &#39;2018, Illuscio&#39;
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,1272 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>API Documentation &mdash; spanconsumer 0.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Quick Start - Consumer Service" href="quickstart_consumer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> spanconsumer
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart_scribe.html">Quick Start - Scribe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart_consumer.html">Quick Start - Consumer Service</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#connectionsettings">ConnectionSettings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scribe">Scribe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#spanconsumer">SpanConsumer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testclient">TestClient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#incoming-outgoing">Incoming / Outgoing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#queue-options">Queue Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#processing-options">Processing Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#processor-settings">Processor Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mimetype">MimeType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">spanconsumer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>API Documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api_doc.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-spanconsumer"></span><div class="section" id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="connectionsettings">
+<h2>ConnectionSettings<a class="headerlink" href="#connectionsettings" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spanconsumer.ConnectionSettings">
+<em class="property">class </em><code class="sig-name descname">ConnectionSettings</code><span class="sig-paren">(</span><em class="sig-param">host: str = 'localhost'</em>, <em class="sig-param">port: int = 5672</em>, <em class="sig-param">login: str = 'guest'</em>, <em class="sig-param">password: str = 'guest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_configuration.html#ConnectionSettings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.ConnectionSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Holds rabbitMQ connection settings for <code class="xref py py-class docutils literal notranslate"><span class="pre">Scribe</span></code>. Default to default RabbitMQ
+settings.</p>
+<dl class="attribute">
+<dt id="spanconsumer.ConnectionSettings.host">
+<code class="sig-name descname">host</code><em class="property">: str</em><em class="property"> = 'localhost'</em><a class="headerlink" href="#spanconsumer.ConnectionSettings.host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rabbit Server Host.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">localhost</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ConnectionSettings.login">
+<code class="sig-name descname">login</code><em class="property">: str</em><em class="property"> = 'guest'</em><a class="headerlink" href="#spanconsumer.ConnectionSettings.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rabbit Server Login.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">guest</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ConnectionSettings.password">
+<code class="sig-name descname">password</code><em class="property">: str</em><em class="property"> = 'guest'</em><a class="headerlink" href="#spanconsumer.ConnectionSettings.password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rabbit Server Password.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">guest</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ConnectionSettings.port">
+<code class="sig-name descname">port</code><em class="property">: int</em><em class="property"> = 5672</em><a class="headerlink" href="#spanconsumer.ConnectionSettings.port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rabbit Server Port.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">5672</span></code></p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="scribe">
+<h2>Scribe<a class="headerlink" href="#scribe" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spanconsumer.SpanScribe">
+<em class="property">class </em><code class="sig-name descname">SpanScribe</code><span class="sig-paren">(</span><em class="sig-param">settings=None</em>, <em class="sig-param">loop=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_scribe.html#SpanScribe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanScribe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core class for interacting with a aio_pika connection. This class is intended to
+be used by producers, and also supplies the underlying logic for
+<a class="reference internal" href="#spanconsumer.SpanConsumer" title="spanconsumer.SpanConsumer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpanConsumer</span></code></a>. It allows both producers and consumers to share the same
+underlying logic.</p>
+<dl class="attribute">
+<dt id="spanconsumer.SpanScribe.channel">
+<code class="sig-name descname">channel</code><em class="property">: aio_pika.RobustChannel</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.SpanScribe.channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Async event loop.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanScribe.close_connection">
+<em class="property">async </em><code class="sig-name descname">close_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_scribe.html#SpanScribe.close_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanScribe.close_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close RabbitMQ connection and clean up settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanScribe.connect_to_rabbit">
+<em class="property">async </em><code class="sig-name descname">connect_to_rabbit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_scribe.html#SpanScribe.connect_to_rabbit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanScribe.connect_to_rabbit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try forever to connect to rabbit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanScribe.get_channel">
+<em class="property">async </em><code class="sig-name descname">get_channel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_scribe.html#SpanScribe.get_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanScribe.get_channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Once Connected, get channel</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RobustChannel</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanScribe.get_queue">
+<em class="property">async </em><code class="sig-name descname">get_queue</code><span class="sig-paren">(</span><em class="sig-param">routing_key</em>, <em class="sig-param">queue_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_scribe.html#SpanScribe.get_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanScribe.get_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up worker queue or get previously declared one using this connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>routing_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – of queue.</p></li>
+<li><p><strong>queue_options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">QueueOptions</span></code>]) – Options for pika queue creation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Requested queue.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanScribe.pull_message">
+<em class="property">async </em><code class="sig-name descname">pull_message</code><span class="sig-paren">(</span><em class="sig-param">routing_key</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">max_empty_retries=0</em>, <em class="sig-param">queue_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_scribe.html#SpanScribe.pull_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanScribe.pull_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pull and deserialize message from RabbitMQ.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>routing_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Queue to pull from.</p></li>
+<li><p><strong>schema</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Schema</span></code>]) – Custom Schema or function to use when deserializing body.</p></li>
+<li><p><strong>max_empty_retries</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Maximum time to retry an empty queue. 0.5 seconds
+waited between each retry.</p></li>
+<li><p><strong>queue_options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">QueueOptions</span></code>]) – Options for pika queue creation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Incoming</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Message, deserialized body.</p>
+</dd>
+</dl>
+<p>This method should NOT be used as a general way of fetching messages in
+production, but is included for testing purposes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanScribe.put_message">
+<em class="property">async </em><code class="sig-name descname">put_message</code><span class="sig-paren">(</span><em class="sig-param">routing_key</em>, <em class="sig-param">message</em>, <em class="sig-param">*</em>, <em class="sig-param">headers=None</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">mimetype=None</em>, <em class="sig-param">message_kwargs=None</em>, <em class="sig-param">queue_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_scribe.html#SpanScribe.put_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanScribe.put_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialize and publish message to default exchange.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>routing_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Queue to publish to.</p></li>
+<li><p><strong>message</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – aio_pika.Message or body to be serialized into a message.
+Default messages are created in PERSISTENT delivery mode.</p></li>
+<li><p><strong>headers</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Headers to include in message.</p></li>
+<li><p><strong>schema</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Schema</span></code>]) – Custom schema or function to use when serializing body.</p></li>
+<li><p><strong>mimetype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">MimeType</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – Format to encode message.</p></li>
+<li><p><strong>message_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – Passed to <code class="docutils literal notranslate"><span class="pre">aio_pika.Message</span></code> when generating a message.</p></li>
+<li><p><strong>queue_options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">QueueOptions</span></code>]) – Options for pika queue creation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Ack</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Nack</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Reject</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanScribe.register_mimetype">
+<code class="sig-name descname">register_mimetype</code><span class="sig-paren">(</span><em class="sig-param">mimetype</em>, <em class="sig-param">encoder</em>, <em class="sig-param">decoder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_scribe.html#SpanScribe.register_mimetype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanScribe.register_mimetype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers encoder and decoder function for a given mimetype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mimetype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">MimeType</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – to register for ex: <code class="docutils literal notranslate"><span class="pre">'text/csv'</span></code>.</p></li>
+<li><p><strong>encoder</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code>]) – Encodes mimetype data to binary.</p></li>
+<li><p><strong>decoder</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – Decodes mimetype data to binary.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.SpanScribe.settings">
+<code class="sig-name descname">settings</code><em class="property">: ConnectionSettings</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.SpanScribe.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings class passed to init.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="spanconsumer">
+<h2>SpanConsumer<a class="headerlink" href="#spanconsumer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spanconsumer.SpanConsumer">
+<em class="property">class </em><code class="sig-name descname">SpanConsumer</code><span class="sig-paren">(</span><em class="sig-param">name=None</em>, <em class="sig-param">connection_settings=None</em>, <em class="sig-param">prefetch_count=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Consumer service framework. Connects to rabbit and handles messages.</p>
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.add_error_handler">
+<code class="sig-name descname">add_error_handler</code><span class="sig-paren">(</span><em class="sig-param">handler</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.add_error_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.add_error_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds <code class="docutils literal notranslate"><span class="pre">handler</span></code> as error handler for errors that occur when processing a
+message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>handler</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ProcessorSettings</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Coroutine</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – Coroutine to add.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.add_shutdown_task">
+<code class="sig-name descname">add_shutdown_task</code><span class="sig-paren">(</span><em class="sig-param">task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.add_shutdown_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.add_shutdown_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds <code class="docutils literal notranslate"><span class="pre">task</span></code> as function to be run during shutdown, before rabbit connection
+is closed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.add_startup_task">
+<code class="sig-name descname">add_startup_task</code><span class="sig-paren">(</span><em class="sig-param">task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.add_startup_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.add_startup_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds <code class="docutils literal notranslate"><span class="pre">task</span></code> as function to be run during startup, after rabbit connection and
+queues are established.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.lifecycle">
+<em class="property">property </em><code class="sig-name descname">lifecycle</code><a class="headerlink" href="#spanconsumer.SpanConsumer.lifecycle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current or last used lifecycle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Lifecycle</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.logger">
+<em class="property">property </em><code class="sig-name descname">logger</code><a class="headerlink" href="#spanconsumer.SpanConsumer.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logger the service uses. Can be referenced by processors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.loop">
+<em class="property">property </em><code class="sig-name descname">loop</code><a class="headerlink" href="#spanconsumer.SpanConsumer.loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event loop consumer is running on.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractEventLoop</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.on_error">
+<code class="sig-name descname">on_error</code><span class="sig-paren">(</span><em class="sig-param">handler</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.on_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.on_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator that adds function as error handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>handler</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ProcessorSettings</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Coroutine</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – Coroutine to add.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ProcessorSettings</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Coroutine</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.on_shutdown">
+<code class="sig-name descname">on_shutdown</code><span class="sig-paren">(</span><em class="sig-param">task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.on_shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.on_shutdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator. Adds <code class="docutils literal notranslate"><span class="pre">task</span></code> as function to be run during shutdown, before rabbit
+connection is closed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">SpanConsumer</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Coroutine</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.on_startup">
+<code class="sig-name descname">on_startup</code><span class="sig-paren">(</span><em class="sig-param">task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.on_startup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.on_startup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator. Adds <code class="docutils literal notranslate"><span class="pre">task</span></code> as function to be run during startup, after rabbit
+connection and queues are established.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">SpanConsumer</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Coroutine</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.processor">
+<code class="sig-name descname">processor</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">in_key</em>, <em class="sig-param">out_key=None</em>, <em class="sig-param">in_schema=None</em>, <em class="sig-param">out_schema=None</em>, <em class="sig-param">queue_options=None</em>, <em class="sig-param">processing_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.processor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.processor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for message processing function. Registers function with service.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Input routing key / queue name to pull messages from.</p></li>
+<li><p><strong>out_key</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Output routing key / queue name to send messages to with
+outgoing object body as message body.</p></li>
+<li><p><strong>in_schema</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Schema</span></code>]) – Schema or function to use when decoding incoming message body.</p></li>
+<li><p><strong>out_schema</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Schema</span></code>]) – Schema or function to use when encoding outgoing message
+body.</p></li>
+<li><p><strong>queue_options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">QueueOptions</span></code>]) – Options for pika queue creation.</p></li>
+<li><p><strong>processing_options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ProcessingOptions</span></code>]) – Options for pika message processing.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Decorated functions must:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Return None.</p></li>
+<li><p>Accept a <a class="reference internal" href="#spanconsumer.Incoming" title="spanconsumer.Incoming"><code class="xref py py-class docutils literal notranslate"><span class="pre">Incoming</span></code></a> object as their first argument.</p></li>
+<li><p>Accept a <a class="reference internal" href="#spanconsumer.Outgoing" title="spanconsumer.Outgoing"><code class="xref py py-class docutils literal notranslate"><span class="pre">Outgoing</span></code></a> object as their second argument.</p></li>
+</ul>
+</div></blockquote>
+<p>No other arguments are passed to the function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.register_mimetype">
+<code class="sig-name descname">register_mimetype</code><span class="sig-paren">(</span><em class="sig-param">mimetype</em>, <em class="sig-param">encoder</em>, <em class="sig-param">decoder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.register_mimetype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.register_mimetype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers encoder and decoder function for a given mimetype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mimetype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">MimeType</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – to register for ex: <code class="docutils literal notranslate"><span class="pre">'text/csv'</span></code>.</p></li>
+<li><p><strong>encoder</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code>]) – Encodes mimetype data to binary.</p></li>
+<li><p><strong>decoder</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – Decodes mimetype data to binary.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.reset">
+<code class="sig-name descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset service lifecycle after shutdown</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>RuntimeError</strong> – If service has not been shutdown.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the service.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.SpanConsumer.settings">
+<code class="sig-name descname">settings</code><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.SpanConsumer.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Consumer Service settings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.signal_shutdown">
+<code class="sig-name descname">signal_shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.signal_shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.signal_shutdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signal the service to be shutdown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.SpanConsumer.test_client">
+<code class="sig-name descname">test_client</code><span class="sig-paren">(</span><em class="sig-param">delete_queues=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_consumer.html#SpanConsumer.test_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.SpanConsumer.test_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns test client for use in a context block for testing service.
+NOTE: The connection is not mocked. To make use of this client, a running rabbit
+connection must be reachable by the testing program.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>delete_queues</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – True: relevant queues are deleted before returning the
+test client so tests can be entered with a clean slate.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TestClient</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="testclient">
+<h2>TestClient<a class="headerlink" href="#testclient" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spanconsumer.TestClient">
+<em class="property">class </em><code class="sig-name descname">TestClient</code><span class="sig-paren">(</span><em class="sig-param">consumer</em>, <em class="sig-param">delete_queues</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_test_client.html#TestClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.TestClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Context manager for handling lifecycle of a consumer service in it’s own thread when
+running tests.</p>
+<dl class="attribute">
+<dt id="spanconsumer.TestClient.consumer">
+<code class="sig-name descname">consumer</code><em class="property">: 'SpanConsumer'</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.TestClient.consumer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Consumer object the test client was spawned from.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.TestClient.delete_queues">
+<em class="property">async </em><code class="sig-name descname">delete_queues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_test_client.html#TestClient.delete_queues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.TestClient.delete_queues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes queues when exiting context block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.TestClient.get_queue">
+<code class="sig-name descname">get_queue</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_test_client.html#TestClient.get_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.TestClient.get_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Non-async way to get one of the consumer’s queues for testing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of queue to fetch.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Requested queue.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.TestClient.loop">
+<em class="property">property </em><code class="sig-name descname">loop</code><a class="headerlink" href="#spanconsumer.TestClient.loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asyncio loop shared with the consumer in another thread. This loop needs to
+be accessed in a thread safe way since the consumer is being run in another
+thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractEventLoop</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.TestClient.pull_message">
+<code class="sig-name descname">pull_message</code><span class="sig-paren">(</span><em class="sig-param">routing_key</em>, <em class="sig-param">schema=None</em>, <em class="sig-param">max_empty_retries=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_test_client.html#TestClient.pull_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.TestClient.pull_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Non-async way to pull message from the consumer’s queue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>routing_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – name of queue to pull from.</p></li>
+<li><p><strong>schema</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Schema</span></code>]) – to deserialize message body.</p></li>
+<li><p><strong>max_empty_retries</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of times to retry an empty queue. Retries are
+attempted once every 0.5 seconds.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Incoming</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.TestClient.put_message">
+<code class="sig-name descname">put_message</code><span class="sig-paren">(</span><em class="sig-param">routing_key</em>, <em class="sig-param">message=&lt;spanconsumer._incoming_outgoing._NotLoadedFlag object&gt;</em>, <em class="sig-param">mimetype=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_test_client.html#TestClient.put_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.TestClient.put_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Non-async way to put a message to the consumer’s queue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>routing_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – key to put message to</p></li>
+<li><p><strong>message</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – body of message to send or full message object. Bodies will be
+automatically serialized if possible.</p></li>
+<li><p><strong>kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – if only the body is supplied, other keyword arguments can go
+here.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Ack</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Nack</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Reject</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Confirmation from aio_pika.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="incoming-outgoing">
+<h2>Incoming / Outgoing<a class="headerlink" href="#incoming-outgoing" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spanconsumer.Incoming">
+<em class="property">class </em><code class="sig-name descname">Incoming</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_incoming_outgoing.html#Incoming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.Incoming" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="spanconsumer.Incoming.delivery_count">
+<em class="property">property </em><code class="sig-name descname">delivery_count</code><a class="headerlink" href="#spanconsumer.Incoming.delivery_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>How many times the message has been re-delivered.</p>
+<p>NOTE: Only quorum queues fully track delivery count. For classic queues, the
+count will always be 1 if the message has been redelivered, regardless of the
+number of times it has been re-queued.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.Incoming.media_loaded">
+<code class="sig-name descname">media_loaded</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_incoming_outgoing.html#Incoming.media_loaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.Incoming.media_loaded" title="Permalink to this definition">¶</a></dt>
+<dd><p>De-serializes message body</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[~LoadedType]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.Incoming.message">
+<code class="sig-name descname">message</code><em class="property">: aio_pika.IncomingMessage</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.Incoming.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Message from RabbitMQ</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.Incoming.redelivered">
+<em class="property">property </em><code class="sig-name descname">redelivered</code><a class="headerlink" href="#spanconsumer.Incoming.redelivered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the message has been redelivered.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.Incoming.reject">
+<code class="sig-name descname">reject</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#spanconsumer.Incoming.reject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set to true to reject message that would normally be requeued.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.Incoming.schema">
+<code class="sig-name descname">schema</code><em class="property">: Optional[Schema]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.Incoming.schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deserializer supplied to processor method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="spanconsumer.Outgoing">
+<em class="property">class </em><code class="sig-name descname">Outgoing</code><span class="sig-paren">(</span><em class="sig-param">_encoders: Mapping[Union[ForwardRef('MimeType'), str, NoneType], Callable[[Any], bytes]], media: Any = &lt;spanconsumer._incoming_outgoing._NotLoadedFlag object at 0x7f59b707cc70&gt;, message_kwargs: Dict[str, Any] = &lt;factory&gt;, mimetype: Union[ForwardRef('MimeType'), str, NoneType] = None, headers: Dict[str, Any] = &lt;factory&gt;, schema: Union[Callable, marshmallow.schema.Schema, NoneType] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_incoming_outgoing.html#Outgoing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.Outgoing" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="spanconsumer.Outgoing.generate_message">
+<code class="sig-name descname">generate_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_incoming_outgoing.html#Outgoing.generate_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.Outgoing.generate_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializes message body and returns message. Default messages are persistent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.Outgoing.headers">
+<code class="sig-name descname">headers</code><em class="property">: Dict[str, Any]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.Outgoing.headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Headers to add to message.</p>
+<ul class="simple">
+<li><p><strong>default factory:</strong> <code class="docutils literal notranslate"><span class="pre">builtins.dict</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.Outgoing.media">
+<code class="sig-name descname">media</code><em class="property">: Any</em><em class="property"> = &lt;spanconsumer._incoming_outgoing._NotLoadedFlag object&gt;</em><a class="headerlink" href="#spanconsumer.Outgoing.media" title="Permalink to this definition">¶</a></dt>
+<dd><p>User-supplied body to serialize. Can also be pre-initialized <code class="docutils literal notranslate"><span class="pre">aio_pika.Message</span></code>
+Defaults to “MISSING” object. No message will be sent if body is not set.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">&lt;spanconsumer._incoming_outgoing._NotLoadedFlag</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f59b707cc70&gt;</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.Outgoing.message_kwargs">
+<code class="sig-name descname">message_kwargs</code><em class="property">: Dict[str, Any]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.Outgoing.message_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>User-supplied keyword arguments to pass to <code class="docutils literal notranslate"><span class="pre">aio_pika.Message</span></code>.</p>
+<ul class="simple">
+<li><p><strong>default factory:</strong> <code class="docutils literal notranslate"><span class="pre">builtins.dict</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.Outgoing.mimetype">
+<code class="sig-name descname">mimetype</code><em class="property">: Union[MimeType, str, None]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.Outgoing.mimetype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mimetype to send body as.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.Outgoing.schema">
+<code class="sig-name descname">schema</code><em class="property">: Union[Callable, marshmallow.schema.Schema, None]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.Outgoing.schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer supplied to processor method.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="queue-options">
+<h2>Queue Options<a class="headerlink" href="#queue-options" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spanconsumer.QueueOptions">
+<em class="property">class </em><code class="sig-name descname">QueueOptions</code><span class="sig-paren">(</span><em class="sig-param">durable: bool = True</em>, <em class="sig-param">passive: bool = False</em>, <em class="sig-param">auto_delete: bool = False</em>, <em class="sig-param">arguments: Optional[Dict[str</em>, <em class="sig-param">Any]] = None</em>, <em class="sig-param">timeout: Optional[int] = None</em>, <em class="sig-param">robust: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_configuration.html#QueueOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.QueueOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aio-Pika queue settings. Passed to <code class="docutils literal notranslate"><span class="pre">aiopika.channel.declare_queue()</span></code> as
+kwargs.</p>
+<dl class="attribute">
+<dt id="spanconsumer.QueueOptions.arguments">
+<code class="sig-name descname">arguments</code><em class="property">: Optional[Dict[str, Any]]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.QueueOptions.arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Additional arguments to pass to the broker.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.QueueOptions.auto_delete">
+<code class="sig-name descname">auto_delete</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#spanconsumer.QueueOptions.auto_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete queue when empty.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.QueueOptions.durable">
+<code class="sig-name descname">durable</code><em class="property">: bool</em><em class="property"> = True</em><a class="headerlink" href="#spanconsumer.QueueOptions.durable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the queue should store messages on disk.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.QueueOptions.passive">
+<code class="sig-name descname">passive</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#spanconsumer.QueueOptions.passive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only check to see if queue exists.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.QueueOptions.robust">
+<code class="sig-name descname">robust</code><em class="property">: bool</em><em class="property"> = True</em><a class="headerlink" href="#spanconsumer.QueueOptions.robust" title="Permalink to this definition">¶</a></dt>
+<dd><p>See aio-pika documentation.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.QueueOptions.timeout">
+<code class="sig-name descname">timeout</code><em class="property">: Optional[int]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.QueueOptions.timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timout for queue declaration.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="processing-options">
+<h2>Processing Options<a class="headerlink" href="#processing-options" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spanconsumer.ProcessingOptions">
+<em class="property">class </em><code class="sig-name descname">ProcessingOptions</code><span class="sig-paren">(</span><em class="sig-param">requeue: bool = False</em>, <em class="sig-param">reject_on_redelivered: bool = False</em>, <em class="sig-param">ignore_processed: bool = False</em>, <em class="sig-param">max_delivery_count: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_configuration.html#ProcessingOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.ProcessingOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aio-Pika message handler settings. Passed to
+<code class="docutils literal notranslate"><span class="pre">aiopika.IncomingMessage.__aenter__()</span></code> context as kwargs.</p>
+<dl class="attribute">
+<dt id="spanconsumer.ProcessingOptions.ignore_processed">
+<code class="sig-name descname">ignore_processed</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#spanconsumer.ProcessingOptions.ignore_processed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ignore message if it has been processed.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessingOptions.kwargs">
+<code class="sig-name descname">kwargs</code><em class="property">: Dict[str, Any]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessingOptions.kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kwargs used for aio pika message context. Not for setting by user.</p>
+<ul class="simple">
+<li><p><strong>field-only</strong></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessingOptions.max_delivery_count">
+<code class="sig-name descname">max_delivery_count</code><em class="property">: int</em><em class="property"> = -1</em><a class="headerlink" href="#spanconsumer.ProcessingOptions.max_delivery_count" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">x-delivery-count</span></code> header value to stop re-queueing failed messages.</p>
+<p><code class="docutils literal notranslate"><span class="pre">-1</span></code> is interpreted as no limit.</p>
+<p>NOTE: RabbitMQ Delivery counts start at <code class="docutils literal notranslate"><span class="pre">0</span></code>. The second time the message is
+delivered it’s delivery count is <code class="docutils literal notranslate"><span class="pre">2</span></code></p>
+<p>NOTE: This option has no effect on classic queues. Only quorum queues track delivery
+count.</p>
+<p>NOTE: This option has no effect if <code class="docutils literal notranslate"><span class="pre">requeue</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>NOTE: This option is not passed to aiopika, but handled directly by spanconsumer.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">-1</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessingOptions.reject_on_redelivered">
+<code class="sig-name descname">reject_on_redelivered</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#spanconsumer.ProcessingOptions.reject_on_redelivered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do no requeue if the message has already been requeued once.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessingOptions.requeue">
+<code class="sig-name descname">requeue</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#spanconsumer.ProcessingOptions.requeue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requeue message on failure.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="processor-settings">
+<h2>Processor Settings<a class="headerlink" href="#processor-settings" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spanconsumer.ProcessorSettings">
+<em class="property">class </em><code class="sig-name descname">ProcessorSettings</code><span class="sig-paren">(</span><em class="sig-param">consumer: SpanConsumer, worker: Union[Callable[[spanconsumer._incoming_outgoing.Incoming], Coroutine[Any, Any, None]], Callable[[spanconsumer._incoming_outgoing.Incoming, Optional[spanconsumer._incoming_outgoing.Outgoing]], Coroutine[Any, Any, None]]], in_key: str, out_key: Optional[str], in_schema: Optional[marshmallow.schema.Schema], out_schema: Optional[marshmallow.schema.Schema], queue_options: Optional[spanconsumer._configuration.QueueOptions] = None, processing_options: spanconsumer._configuration.ProcessingOptions = &lt;factory&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_configuration.html#ProcessorSettings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.ProcessorSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings for a decorated route processor function.</p>
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorSettings.consumer">
+<code class="sig-name descname">consumer</code><em class="property">: 'SpanConsumer'</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorSettings.consumer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The parent consumer to run the processor.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorSettings.in_key">
+<code class="sig-name descname">in_key</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorSettings.in_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rabbit routing key messages are pulled from.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorSettings.in_schema">
+<code class="sig-name descname">in_schema</code><em class="property">: Optional[Schema]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorSettings.in_schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function or schema to deserialize incoming message body.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorSettings.out_key">
+<code class="sig-name descname">out_key</code><em class="property">: Optional[str]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorSettings.out_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rabbit routing key outgoing are sent to.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorSettings.out_schema">
+<code class="sig-name descname">out_schema</code><em class="property">: Optional[Schema]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorSettings.out_schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function or schema to deserialize outgoing message body.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorSettings.processing_options">
+<code class="sig-name descname">processing_options</code><em class="property">: ProcessingOptions</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorSettings.processing_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aio-Pika message processing options.</p>
+<ul class="simple">
+<li><p><strong>default factory:</strong> <code class="docutils literal notranslate"><span class="pre">spanconsumer._configuration.ProcessingOptions</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorSettings.processor">
+<code class="sig-name descname">processor</code><em class="property">: WrappedProcessorType</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorSettings.processor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor function to execute.</p>
+<ul class="simple">
+<li><p><strong>field-only</strong></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorSettings.queue_options">
+<code class="sig-name descname">queue_options</code><em class="property">: Optional[spanconsumer._configuration.QueueOptions]</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorSettings.queue_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aio-Pika queue options.</p>
+<ul class="simple">
+<li><p><strong>default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorSettings.worker">
+<code class="sig-name descname">worker</code><em class="property">: ProcessorType</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorSettings.worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>The function passed into the decorator.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="mimetype">
+<h2>MimeType<a class="headerlink" href="#mimetype" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spanconsumer.MimeType">
+<em class="property">class </em><code class="sig-name descname">MimeType</code><a class="reference internal" href="_modules/spantools/_mimetype.html#MimeType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.MimeType" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enumeration.</p>
+<p>Enum class for the default supported Content-Types / Mimetypes for decoding and
+encoding.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Enum Attr</p></th>
+<th class="head"><p>Text Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>JSON</p></td>
+<td><p>application/json</p></td>
+</tr>
+<tr class="row-odd"><td><p>YAML</p></td>
+<td><p>application/yaml</p></td>
+</tr>
+<tr class="row-even"><td><p>BSON</p></td>
+<td><p>application/bson</p></td>
+</tr>
+<tr class="row-odd"><td><p>TEXT</p></td>
+<td><p>text/plain</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="spanconsumer.MimeType.is_mimetype">
+<em class="property">classmethod </em><code class="sig-name descname">is_mimetype</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">mimetype</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spantools/_mimetype.html#MimeType.is_mimetype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.MimeType.is_mimetype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if string or enum is equivalent to a given mimetype enum value.
+Similar to <code class="docutils literal notranslate"><span class="pre">isinstance()</span></code> or <code class="docutils literal notranslate"><span class="pre">issubclass()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">MimeType</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – to check</p></li>
+<li><p><strong>mimetype</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">MimeType</span></code>) – to check against.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True: is equivalent. False: is not Equivalent.</p>
+</dd>
+</dl>
+<p>Does some cleaning (such as resolving case and removing ‘x-‘ from type).</p>
+<p>For instance, all of the following will pass equivalence for <code class="docutils literal notranslate"><span class="pre">MimeType.YAML</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>‘application/yaml’</p></li>
+<li><p>‘application/YAML’</p></li>
+<li><p>‘application/x-yaml’</p></li>
+<li><p>‘yaml’</p></li>
+<li><p>‘x-yaml’</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.MimeType.from_name">
+<em class="property">classmethod </em><code class="sig-name descname">from_name</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spantools/_mimetype.html#MimeType.from_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.MimeType.from_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns enum for given name. Does some cleaning (such as resolving case and
+removing ‘x-‘ from type.)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">MimeType</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – Value to convert to enum.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – No MimeType enum for value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MimeType</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.MimeType.to_string">
+<em class="property">classmethod </em><code class="sig-name descname">to_string</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spantools/_mimetype.html#MimeType.to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.MimeType.to_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get string value for given enum or string mimetype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">MimeType</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – Incoming value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>String representation.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If mimetype is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.MimeType.add_to_headers">
+<em class="property">static </em><code class="sig-name descname">add_to_headers</code><span class="sig-paren">(</span><em class="sig-param">headers</em>, <em class="sig-param">mimetype</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spantools/_mimetype.html#MimeType.add_to_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.MimeType.add_to_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add ‘Content-Type’ header for mimetype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>headers</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">MutableMapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – headers obj</p></li>
+<li><p><strong>mimetype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">MimeType</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – to add</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spanconsumer.MimeType.from_headers">
+<em class="property">classmethod </em><code class="sig-name descname">from_headers</code><span class="sig-paren">(</span><em class="sig-param">headers</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spantools/_mimetype.html#MimeType.from_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.MimeType.from_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get mimetype from ‘Content-Type’ value of headers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>headers</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – to fetch from.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">MimeType</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>mimetype.</p>
+</dd>
+</dl>
+<p>If known mimetype, enum value will be returned. If ‘Content-Type’ is not in
+headers, None is returned.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="spanconsumer.MimeTypeTolerant">
+<code class="sig-name descname">MimeTypeTolerant</code><a class="headerlink" href="#spanconsumer.MimeTypeTolerant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Typing alias for <code class="docutils literal notranslate"><span class="pre">Union[MimeType,</span> <span class="pre">str,</span> <span class="pre">None]</span></code>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="spanconsumer.ProcessorError">
+<em class="property">exception </em><code class="sig-name descname">ProcessorError</code><span class="sig-paren">(</span><em class="sig-param">error</em>, <em class="sig-param">incoming</em>, <em class="sig-param">outgoing</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spanconsumer/_errors.html#ProcessorError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.ProcessorError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error occurred during supplied processor operation.</p>
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorError.error">
+<code class="sig-name descname">error</code><em class="property">: BaseException</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorError.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error raised in processor.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorError.incoming">
+<code class="sig-name descname">incoming</code><em class="property">: 'Incoming'</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorError.incoming" title="Permalink to this definition">¶</a></dt>
+<dd><p>Incoming object passed to processor.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="spanconsumer.ProcessorError.outgoing">
+<code class="sig-name descname">outgoing</code><em class="property">: Optional['Outgoing']</em><em class="property"> = None</em><a class="headerlink" href="#spanconsumer.ProcessorError.outgoing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outgoing object passed to processor.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="spanconsumer.ConfirmOutgoingError">
+<em class="property">exception </em><code class="sig-name descname">ConfirmOutgoingError</code><a class="reference internal" href="_modules/spanconsumer/_errors.html#ConfirmOutgoingError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.ConfirmOutgoingError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Broker did not confirm outgoing message</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="spanconsumer.ConsumerStop">
+<em class="property">exception </em><code class="sig-name descname">ConsumerStop</code><a class="reference internal" href="_modules/spanconsumer/_errors.html#ConsumerStop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spanconsumer.ConsumerStop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sent when exiting context block to halt running consumer.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="quickstart_consumer.html" class="btn btn-neutral float-left" title="Quick Start - Consumer Service" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright &#39;2018, Illuscio&#39;
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

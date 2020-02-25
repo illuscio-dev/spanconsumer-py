@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Quick Start - Scribe &mdash; spanconsumer 0.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick Start - Consumer Service" href="quickstart_consumer.html" />
+    <link rel="prev" title="SpanConsumer" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> spanconsumer
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start - Scribe</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#rabbitmq-connection-settings">RabbitMQ Connection Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#start-scribe-connection">Start Scribe Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#put-a-message">Put a Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pull-a-message">Pull a Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-a-marshmallow-schema">Use a Marshmallow Schema</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart_consumer.html">Quick Start - Consumer Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">spanconsumer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Quick Start - Scribe</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/quickstart_scribe.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-spanconsumer"></span><div class="section" id="quick-start-scribe">
+<h1>Quick Start - Scribe<a class="headerlink" href="#quick-start-scribe" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="api_doc.html#spanconsumer.SpanScribe" title="spanconsumer.SpanScribe"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpanScribe</span></code></a> class offers the core logic of sending and pulling messages.
+This class offers the methods that <a class="reference internal" href="api_doc.html#spanconsumer.SpanConsumer" title="spanconsumer.SpanConsumer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpanConsumer</span></code></a> is built off of, and is
+designed to be a common interface shared between consumers and producers.</p>
+<p>All Examples below show implementations involving producers, as it is recommended
+consumer services be built around the <a class="reference internal" href="api_doc.html#spanconsumer.SpanConsumer" title="spanconsumer.SpanConsumer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpanConsumer</span></code></a> framework rather than
+invoking <code class="xref py py-class docutils literal notranslate"><span class="pre">Spanscribe</span></code> itself.</p>
+<div class="section" id="rabbitmq-connection-settings">
+<h2>RabbitMQ Connection Settings<a class="headerlink" href="#rabbitmq-connection-settings" title="Permalink to this headline">¶</a></h2>
+<p>If any of your connection settings are not the default, you will need to crete a
+<a class="reference internal" href="api_doc.html#spanconsumer.ConnectionSettings" title="spanconsumer.ConnectionSettings"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConnectionSettings</span></code></a> object. All default values can remain unspecified.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spanconsumer</span> <span class="kn">import</span> <span class="n">ConnectionSettings</span>
+
+<span class="n">rabbit_settings</span> <span class="o">=</span> <span class="n">ConnectionSettings</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;rabbit_service&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rabbit_settings</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ConnectionSettings</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;rabbit_service&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5672</span><span class="p">,</span> <span class="n">login</span><span class="o">=</span><span class="s1">&#39;guest&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;guest&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="start-scribe-connection">
+<h2>Start Scribe Connection<a class="headerlink" href="#start-scribe-connection" title="Permalink to this headline">¶</a></h2>
+<p>Before the other methods will work, we need to connect to RabbitMQ via SpanScribe.
+Remember we need to execute this inside an asyncio loop, since this is an asyncio
+interface.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">spanconsumer</span> <span class="kn">import</span> <span class="n">SpanScribe</span>
+
+
+<span class="c1"># This will be our main async function</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">run_connection</span><span class="p">():</span>
+    <span class="n">scribe</span> <span class="o">=</span> <span class="n">SpanScribe</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">rabbit_settings</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">connect_to_rabbit</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="c1"># we can set the logger level to get more info about scribe&#39;s connections</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">root</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Starting the main asyncio loop</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">run_connection</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONNECTION</span> <span class="n">ESTABLISHED</span> <span class="n">TO</span> <span class="n">RABBITMQ</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="api_doc.html#spanconsumer.SpanScribe" title="spanconsumer.SpanScribe"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpanScribe</span></code></a> will try forever to connect to RabbitMQ once a second until it
+succeeds – never throwing an error. It is designed to function in micro-service
+environments where the messaging service availability may go out unexpectedly.</p>
+</div>
+<div class="section" id="put-a-message">
+<h2>Put a Message<a class="headerlink" href="#put-a-message" title="Permalink to this headline">¶</a></h2>
+<p>It’s easy to send a message! No need to worry about the myriad of settings when all
+you need to do is send message bodies to a queue! If queues are not explicitly,
+declared they are generated in persistent mode on the default exchange. Most users will
+not need to worry about the more intricate, advanced settings than this, so they are
+handled for you.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">run_connection</span><span class="p">():</span>
+    <span class="n">scribe</span> <span class="o">=</span> <span class="n">SpanScribe</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">rabbit_settings</span><span class="p">)</span>
+    <span class="c1"># Establish the connection</span>
+    <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">connect_to_rabbit</span><span class="p">()</span>
+
+    <span class="c1"># scribe handles the broiler-plate of creating a channel and declaring a queue</span>
+    <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">put_message</span><span class="p">(</span><span class="n">routing_key</span><span class="o">=</span><span class="s2">&quot;test_queue&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;OH HEY, MARK!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="api_doc.html#spanconsumer.SpanScribe.put_message" title="spanconsumer.SpanScribe.put_message"><code class="xref py py-func docutils literal notranslate"><span class="pre">SpanScribe.put_message()</span></code></a> will automatically serialize the message if it is a
+string, json-compatible dictionary, or bytes. All other types aren passed to <code class="docutils literal notranslate"><span class="pre">str()</span></code>,
+then encoded to bytes.</p>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>CONNECTION ESTABLISHED TO RABBITMQ
+RABBITMQ CHANNEL ESTABLISHED
+RABBITMQ `test_queue` QUEUE DECLARED
+</pre></div>
+</div>
+</div>
+<div class="section" id="pull-a-message">
+<h2>Pull a Message<a class="headerlink" href="#pull-a-message" title="Permalink to this headline">¶</a></h2>
+<p>Let’s fetch the message we just put on the queue:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">run_connection</span><span class="p">():</span>
+
+    <span class="n">scribe</span> <span class="o">=</span> <span class="n">SpanScribe</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">rabbit_settings</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">connect_to_rabbit</span><span class="p">()</span>
+
+    <span class="c1"># messages are returned in an Incoming object.</span>
+    <span class="n">incoming</span> <span class="o">=</span> <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">pull_message</span><span class="p">(</span><span class="s2">&quot;test_queue&quot;</span><span class="p">)</span>
+
+    <span class="c1"># We need to process this in a context block, or the message will not be removed</span>
+    <span class="c1"># from the queue.</span>
+    <span class="k">with</span> <span class="n">incoming</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">process</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">incoming</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;BODY:&quot;</span><span class="p">,</span> <span class="n">incoming</span><span class="o">.</span><span class="n">body_data</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>An <a class="reference internal" href="api_doc.html#spanconsumer.Incoming" title="spanconsumer.Incoming"><code class="xref py py-class docutils literal notranslate"><span class="pre">Incoming</span></code></a> object is returned, which contains the message and a method for
+automatically deserializing the message body.</p>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>CONNECTION ESTABLISHED TO RABBITMQ
+...
+IncomingMessage:{&#39;app_id&#39;: None,
+ &#39;body_size&#39;: 13,
+ &#39;cluster_id&#39;: None,
+ &#39;consumer_tag&#39;: None,
+ &#39;content_encoding&#39;: &#39;&#39;,
+ &#39;content_type&#39;: &#39;&#39;,
+ &#39;correlation_id&#39;: None,
+ &#39;delivery_mode&#39;: 2,
+ &#39;delivery_tag&#39;: 1,
+ &#39;exchange&#39;: &#39;&#39;,
+ &#39;expiration&#39;: None,
+ &#39;headers&#39;: {},
+ &#39;message_id&#39;: &#39;37cebf918723bfbb0c7aad47d360d3a1&#39;,
+ &#39;priority&#39;: 0,
+ &#39;redelivered&#39;: False,
+ &#39;reply_to&#39;: None,
+ &#39;routing_key&#39;: &#39;test_queue&#39;,
+ &#39;timestamp&#39;: None,
+ &#39;type&#39;: &#39;None&#39;,
+ &#39;user_id&#39;: None}
+BODY: OH HEY, MARK!
+</pre></div>
+</div>
+<p><strong>It is recommended that message pulling only be used in tests, and not to build
+consumers on top of, as it is not an efficient implementation.</strong></p>
+</div>
+<div class="section" id="use-a-marshmallow-schema">
+<h2>Use a Marshmallow Schema<a class="headerlink" href="#use-a-marshmallow-schema" title="Permalink to this headline">¶</a></h2>
+<p>Serializers and deserializers can also be marshmallow schemas.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NameSchema</span><span class="p">(</span><span class="n">marshmallow</span><span class="o">.</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">marshmallow</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">marshmallow</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">run_connection</span><span class="p">():</span>
+    <span class="n">scribe</span> <span class="o">=</span> <span class="n">SpanScribe</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">rabbit_settings</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">connect_to_rabbit</span><span class="p">()</span>
+
+    <span class="n">value_sent</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;Harry&quot;</span><span class="p">,</span> <span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;Potter&quot;</span><span class="p">}</span>
+    <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">put_message</span><span class="p">(</span><span class="s2">&quot;test_queue&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">value_sent</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">NameSchema</span><span class="p">())</span>
+
+    <span class="n">incoming</span> <span class="o">=</span> <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">pull_message</span><span class="p">(</span>
+        <span class="s2">&quot;test_queue&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">NameSchema</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">incoming</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">process</span><span class="p">():</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">incoming</span><span class="o">.</span><span class="n">body_data</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;BODY:&quot;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;BODY TYPE:&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;EQUALITY: &quot;</span><span class="p">,</span> <span class="n">body</span> <span class="o">==</span> <span class="n">value_sent</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Which means we get schema validation on deserialization! Remember that marshmallow does
+not validate on <code class="docutils literal notranslate"><span class="pre">Schema.dump(s)</span></code> only <code class="docutils literal notranslate"><span class="pre">Schema.load(s)</span></code>, so validation errors will
+only be thrown when pulling information.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">run_connection</span><span class="p">():</span>
+    <span class="n">scribe</span> <span class="o">=</span> <span class="n">SpanScribe</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">rabbit_settings</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">connect_to_rabbit</span><span class="p">()</span>
+
+    <span class="n">value_sent</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;Harry&quot;</span><span class="p">}</span>
+    <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">put_message</span><span class="p">(</span>
+        <span class="s2">&quot;test_queue&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">value_sent</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">NameSchema</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">incoming</span> <span class="o">=</span> <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">pull_message</span><span class="p">(</span>
+        <span class="s2">&quot;test_queue&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">NameSchema</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">incoming</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">process</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">incoming</span><span class="o">.</span><span class="n">body_data</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">marshmallow</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR:&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONNECTION</span> <span class="n">ESTABLISHED</span> <span class="n">TO</span> <span class="n">RABBITMQ</span>
+<span class="o">...</span>
+<span class="n">ERROR</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;last&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Missing data for required field.&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="quickstart_consumer.html" class="btn btn-neutral float-right" title="Quick Start - Consumer Service" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="SpanConsumer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright &#39;2018, Illuscio&#39;
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

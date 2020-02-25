@@ -1,0 +1,370 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>spanconsumer._incoming_outgoing &mdash; spanconsumer 0.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> spanconsumer
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart_scribe.html">Quick Start - Scribe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart_consumer.html">Quick Start - Consumer Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_doc.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">spanconsumer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>spanconsumer._incoming_outgoing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for spanconsumer._incoming_outgoing</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">aio_pika</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span>
+
+<span class="kn">from</span> <span class="nn">spantools</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">decode_content</span><span class="p">,</span>
+    <span class="n">encode_content</span><span class="p">,</span>
+    <span class="n">MimeType</span><span class="p">,</span>
+    <span class="n">MimeTypeTolerant</span><span class="p">,</span>
+    <span class="n">convert_params_headers</span><span class="p">,</span>
+    <span class="n">EncoderIndexType</span><span class="p">,</span>
+    <span class="n">DecoderIndexType</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="n">MediaType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;MediaType&quot;</span><span class="p">)</span>
+<span class="n">LoadedType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;LoadedType&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_NotLoadedFlag</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="n">NOT_LOADED</span> <span class="o">=</span> <span class="n">_NotLoadedFlag</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Incoming"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.Incoming">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Incoming</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">MediaType</span><span class="p">,</span> <span class="n">LoadedType</span><span class="p">]):</span>
+    <span class="n">message</span><span class="p">:</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">IncomingMessage</span>
+    <span class="sd">&quot;&quot;&quot;Message from RabbitMQ&quot;&quot;&quot;</span>
+    <span class="n">schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Schema</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Deserializer supplied to processor method.&quot;&quot;&quot;</span>
+    <span class="n">_decoders</span><span class="p">:</span> <span class="n">DecoderIndexType</span>
+    <span class="n">reject</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="sd">&quot;&quot;&quot;Set to true to reject message that would normally be requeued.&quot;&quot;&quot;</span>
+    <span class="n">_media</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">MediaType</span><span class="p">,</span> <span class="n">_NotLoadedFlag</span><span class="p">]]</span> <span class="o">=</span> <span class="n">NOT_LOADED</span>
+    <span class="n">_media_loaded</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">LoadedType</span><span class="p">,</span> <span class="n">_NotLoadedFlag</span><span class="p">]]</span> <span class="o">=</span> <span class="n">NOT_LOADED</span>
+    <span class="n">_mimetype</span><span class="p">:</span> <span class="n">MimeTypeTolerant</span> <span class="o">=</span> <span class="n">NOT_LOADED</span>  <span class="c1"># type: ignore</span>
+    <span class="n">_delivery_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mimetype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MimeTypeTolerant</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mimetype</span> <span class="ow">is</span> <span class="n">NOT_LOADED</span><span class="p">:</span>
+            <span class="n">mimetype</span><span class="p">:</span> <span class="n">MimeTypeTolerant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mimetype</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">mimetype</span> <span class="o">=</span> <span class="n">MimeType</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">mimetype</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mimetype</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mimetype</span> <span class="o">=</span> <span class="n">mimetype</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mimetype</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">content</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">body</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">body</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">headers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">HeaderProxy</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">headers</span>
+
+    <span class="k">def</span> <span class="nf">media</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MediaType</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_media</span> <span class="ow">is</span> <span class="n">NOT_LOADED</span><span class="p">:</span>
+            <span class="n">content</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span>
+            <span class="k">if</span> <span class="n">content</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_media</span> <span class="o">=</span> <span class="n">content</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_media_loaded</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_media</span> <span class="o">=</span> <span class="n">decode_content</span><span class="p">(</span>
+                    <span class="n">content</span><span class="p">,</span>
+                    <span class="n">mimetype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span>
+                    <span class="n">allow_sniff</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">data_schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span>
+                    <span class="n">decoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_decoders</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_media</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Optional</span><span class="p">[</span><span class="n">MediaType</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_media</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_media</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">redelivered</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Whether the message has been redelivered.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">redelivered</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">delivery_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        How many times the message has been re-delivered.</span>
+
+<span class="sd">        NOTE: Only quorum queues fully track delivery count. For classic queues, the</span>
+<span class="sd">        count will always be 1 if the message has been redelivered, regardless of the</span>
+<span class="sd">        number of times it has been re-queued.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delivery_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delivery_count</span>
+
+        <span class="n">count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x-delivery-count&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">redelivered</span><span class="p">:</span>
+                <span class="n">count_result</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">count_result</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">count_result</span> <span class="o">=</span> <span class="n">count</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delivery_count</span> <span class="o">=</span> <span class="n">count_result</span>
+        <span class="k">return</span> <span class="n">count_result</span>
+
+<div class="viewcode-block" id="Incoming.media_loaded"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.Incoming.media_loaded">[docs]</a>    <span class="k">def</span> <span class="nf">media_loaded</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LoadedType</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        De-serializes message body</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_media_loaded</span> <span class="ow">is</span> <span class="n">NOT_LOADED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_media_loaded</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Optional</span><span class="p">[</span><span class="n">LoadedType</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_media_loaded</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_media_loaded</span></div></div>
+
+
+<div class="viewcode-block" id="Outgoing"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.Outgoing">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Outgoing</span><span class="p">:</span>
+    <span class="n">_encoders</span><span class="p">:</span> <span class="n">EncoderIndexType</span>
+    <span class="n">media</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">NOT_LOADED</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User-supplied body to serialize. Can also be pre-initialized ``aio_pika.Message``</span>
+<span class="sd">    Defaults to &quot;MISSING&quot; object. No message will be sent if body is not set.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">message_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;User-supplied keyword arguments to pass to ``aio_pika.Message``.&quot;&quot;&quot;</span>
+    <span class="n">mimetype</span><span class="p">:</span> <span class="n">MimeTypeTolerant</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;Mimetype to send body as.&quot;&quot;&quot;</span>
+    <span class="n">headers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Headers to add to message.&quot;&quot;&quot;</span>
+    <span class="n">schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Schema</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;Serializer supplied to processor method.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Outgoing.generate_message"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.Outgoing.generate_message">[docs]</a>    <span class="k">def</span> <span class="nf">generate_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">Message</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Serializes message body and returns message. Default messages are persistent.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="p">,</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span>
+
+        <span class="n">convert_params_headers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="n">body_bytes</span> <span class="o">=</span> <span class="n">encode_content</span><span class="p">(</span>
+            <span class="n">content</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="p">,</span>
+            <span class="n">mimetype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span>
+            <span class="n">data_schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span>
+            <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_encoders</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">Message</span><span class="p">(</span>
+            <span class="n">body</span><span class="o">=</span><span class="n">body_bytes</span><span class="p">,</span>
+            <span class="n">delivery_mode</span><span class="o">=</span><span class="n">aio_pika</span><span class="o">.</span><span class="n">DeliveryMode</span><span class="o">.</span><span class="n">PERSISTENT</span><span class="p">,</span>
+            <span class="n">content_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">message_kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">message</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright &#39;2018, Illuscio&#39;
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

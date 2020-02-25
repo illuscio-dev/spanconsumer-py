@@ -1,0 +1,1135 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="0" hostname="fv-az102" name="pytest" skipped="0" tests="34" time="9.687" timestamp="2020-02-25T20:23:12.560465"><testcase classname="zdevelop.tests.test_consumer.TestConsumption" file="zdevelop/tests/test_consumer.py" line="31" name="test_basic_consume" time="3.066"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: RABBITMQ CONNECTION FAILED. RETRYING IN 1S
+INFO: RABBITMQ CONNECTION FAILED. RETRYING IN 1S
+INFO: RABBITMQ CONNECTION FAILED. RETRYING IN 1S
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+received value:  {&apos;ahhh&apos;: &apos;AHHHH&apos;}
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumption" file="zdevelop/tests/test_consumer.py" line="47" name="test_basic_consume_bytes" time="0.035"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+received raw:  b&apos;Hello&apos;
+received value:  b&apos;Hello&apos;
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumption" file="zdevelop/tests/test_consumer.py" line="64" name="test_basic_consume_model" time="0.061"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+received value:  TestConsumption.test_basic_consume_model.&lt;locals&gt;.Name(first=&apos;Billy&apos;, last=&apos;Peake&apos;)
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumption" file="zdevelop/tests/test_consumer.py" line="88" name="test_basic_pass_through" time="0.040"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: RABBITMQ `test_results` QUEUE DECLARED
+received value:  test value
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumption" file="zdevelop/tests/test_consumer.py" line="105" name="test_return_message" time="0.044"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: RABBITMQ `test_results` QUEUE DECLARED
+INFO: RABBITMQ `test_results` QUEUE DECLARED
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumption" file="zdevelop/tests/test_consumer.py" line="122" name="test_consumption_concurrency" time="3.985"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: RABBITMQ `test_results` QUEUE DECLARED
+INFO: INDEX: 0
+INFO: INDEX: 1
+INFO: INDEX: 2
+INFO: INDEX: 3
+INFO: INDEX: 4
+INFO: INDEX: 5
+INFO: INDEX: 6
+INFO: INDEX: 7
+INFO: INDEX: 8
+INFO: INDEX: 9
+INFO: INDEX: 10
+INFO: INDEX: 11
+INFO: INDEX: 12
+INFO: INDEX: 13
+INFO: INDEX: 14
+INFO: INDEX: 15
+INFO: INDEX: 16
+INFO: INDEX: 17
+INFO: INDEX: 18
+INFO: INDEX: 19
+INFO: INDEX: 20
+INFO: INDEX: 21
+INFO: INDEX: 22
+INFO: INDEX: 23
+INFO: INDEX: 24
+INFO: INDEX: 25
+INFO: INDEX: 26
+INFO: INDEX: 27
+INFO: INDEX: 28
+INFO: INDEX: 29
+INFO: INDEX: 30
+INFO: INDEX: 31
+INFO: INDEX: 32
+INFO: INDEX: 33
+INFO: INDEX: 34
+INFO: INDEX: 35
+INFO: INDEX: 36
+INFO: INDEX: 37
+INFO: INDEX: 38
+INFO: INDEX: 39
+INFO: INDEX: 40
+INFO: INDEX: 41
+INFO: INDEX: 42
+INFO: INDEX: 43
+INFO: INDEX: 44
+INFO: INDEX: 45
+INFO: INDEX: 46
+INFO: INDEX: 47
+INFO: INDEX: 48
+INFO: INDEX: 49
+INFO: INDEX: 50
+INFO: INDEX: 51
+INFO: INDEX: 52
+INFO: INDEX: 53
+INFO: INDEX: 54
+INFO: INDEX: 55
+INFO: INDEX: 56
+INFO: INDEX: 57
+INFO: INDEX: 58
+INFO: INDEX: 59
+INFO: INDEX: 60
+INFO: INDEX: 61
+INFO: INDEX: 62
+INFO: INDEX: 63
+INFO: INDEX: 64
+INFO: INDEX: 65
+INFO: INDEX: 66
+INFO: INDEX: 67
+INFO: INDEX: 68
+INFO: INDEX: 69
+INFO: INDEX: 70
+INFO: INDEX: 71
+INFO: INDEX: 72
+INFO: INDEX: 73
+INFO: INDEX: 74
+INFO: INDEX: 75
+INFO: INDEX: 76
+INFO: INDEX: 77
+INFO: INDEX: 78
+INFO: INDEX: 79
+INFO: INDEX: 80
+INFO: INDEX: 81
+INFO: INDEX: 82
+INFO: INDEX: 83
+INFO: INDEX: 84
+INFO: INDEX: 85
+INFO: INDEX: 86
+INFO: INDEX: 87
+INFO: INDEX: 88
+INFO: INDEX: 89
+INFO: INDEX: 90
+INFO: INDEX: 91
+INFO: INDEX: 92
+INFO: INDEX: 93
+INFO: INDEX: 94
+INFO: INDEX: 95
+INFO: INDEX: 96
+INFO: INDEX: 97
+INFO: INDEX: 98
+INFO: INDEX: 99
+ELAPSED:  2.9511842727661133
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumption" file="zdevelop/tests/test_consumer.py" line="158" name="test_custom_mimetype" time="0.051"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: RABBITMQ `test_results` QUEUE DECLARED
+INFO: RABBITMQ `test_results` QUEUE DECLARED
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumption" file="zdevelop/tests/test_consumer.py" line="200" name="test_requeue_once" time="0.046"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: ERROR AROUND &apos;some_processor&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 218, in some_processor
+    raise ValueError
+ValueError
+
+INFO: Message IncomingMessage:{&apos;app_id&apos;: None,
+ &apos;body_size&apos;: 10,
+ &apos;cluster_id&apos;: &apos;&apos;,
+ &apos;consumer_tag&apos;: &apos;ctag1.0140ee2d90e09b9ec4605883de6d9222&apos;,
+ &apos;content_encoding&apos;: &apos;&apos;,
+ &apos;content_type&apos;: &apos;text/plain&apos;,
+ &apos;correlation_id&apos;: None,
+ &apos;delivery_mode&apos;: 2,
+ &apos;delivery_tag&apos;: 2,
+ &apos;exchange&apos;: &apos;&apos;,
+ &apos;expiration&apos;: None,
+ &apos;headers&apos;: {&apos;Content-Type&apos;: b&apos;text/plain&apos;},
+ &apos;message_id&apos;: &apos;7faaf38cf01162b65a52b5edd17b66c8&apos;,
+ &apos;priority&apos;: 0,
+ &apos;redelivered&apos;: True,
+ &apos;reply_to&apos;: None,
+ &apos;routing_key&apos;: &apos;test_tasks&apos;,
+ &apos;timestamp&apos;: None,
+ &apos;type&apos;: &apos;None&apos;,
+ &apos;user_id&apos;: None} was redelivered and will be rejected
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: ERROR AROUND &apos;some_processor&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 218, in some_processor
+    raise ValueError
+ValueError
+
+INFO: STOP REQUEST RECEIVED BY ASYNC WORKER.
+INFO: WORKERS DONE
+INFO: Task exception was never retrieved
+future: &lt;Task finished name=&apos;Task-1098&apos; coro=&lt;consumer() done, defined at /opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/site-packages/aio_pika/queue.py:25&gt; exception=ConsumerStop(&apos;Consumer stop requested. Exiting worker.&apos;)&gt;
+Traceback (most recent call last):
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/site-packages/aio_pika/queue.py&quot;, line 27, in consumer
+    return await create_task(callback, message, loop=loop)
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 362, in processor_wrapper
+    raise ConsumerStop(&quot;Consumer stop requested. Exiting worker.&quot;)
+spanconsumer._errors.ConsumerStop: Consumer stop requested. Exiting worker.
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumption" file="zdevelop/tests/test_consumer.py" line="228" name="test_requeue_multiple" time="0.091"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: ERROR AROUND &apos;some_processor&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 247, in some_processor
+    raise ValueError
+ValueError
+
+INFO: ERROR AROUND &apos;some_processor&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 247, in some_processor
+    raise ValueError
+ValueError
+
+INFO: ERROR AROUND &apos;some_processor&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 247, in some_processor
+    raise ValueError
+ValueError
+
+INFO: ERROR AROUND &apos;some_processor&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 247, in some_processor
+    raise ValueError
+ValueError
+
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: ERROR AROUND &apos;some_processor&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 247, in some_processor
+    raise ValueError
+ValueError
+
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumption" file="zdevelop/tests/test_consumer.py" line="257" name="test_reject_message" time="0.041"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: ERROR AROUND &apos;some_processor&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 276, in some_processor
+    raise ValueError
+ValueError
+
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumptionErrors" file="zdevelop/tests/test_consumer.py" line="288" name="test_raises_handled" time="0.039"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: ERROR AROUND &apos;raise_value&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 297, in raise_value
+    raise ValueError(&quot;An error was raised!&quot;)
+ValueError: An error was raised!
+
+INFO: ERROR AROUND &apos;raise_value&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 297, in raise_value
+    raise ValueError(&quot;An error was raised!&quot;)
+ValueError: An error was raised!
+
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumptionErrors" file="zdevelop/tests/test_consumer.py" line="305" name="test_raises_handled_custom" time="0.038"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: ERROR AROUND &apos;raise_value&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 321, in raise_value
+    raise ValueError(&quot;2&quot;)
+ValueError: 2
+
+INFO: ERROR AROUND &apos;raise_value&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 321, in raise_value
+    raise ValueError(&quot;2&quot;)
+ValueError: 2
+
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumptionErrors" file="zdevelop/tests/test_consumer.py" line="329" name="test_raises_handled_custom_decorator" time="0.039"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: Task was destroyed but it is pending!
+task: &lt;Task pending name=&apos;Task-1253&apos; coro=&lt;sleep() done, defined at /opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/asyncio/tasks.py:630&gt; wait_for=&lt;Future cancelled&gt; cb=[_chain_future.&lt;locals&gt;._call_set_state() at /opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/asyncio/futures.py:367]&gt;
+INFO: Task was destroyed but it is pending!
+task: &lt;Task pending name=&apos;Task-1304&apos; coro=&lt;sleep() done, defined at /opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/asyncio/tasks.py:630&gt; wait_for=&lt;Future cancelled&gt; cb=[_chain_future.&lt;locals&gt;._call_set_state() at /opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/asyncio/futures.py:367]&gt;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: ERROR AROUND &apos;raise_value&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 344, in raise_value
+    raise ValueError(&quot;2&quot;)
+ValueError: 2
+
+INFO: ERROR AROUND &apos;raise_value&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 344, in raise_value
+    raise ValueError(&quot;2&quot;)
+ValueError: 2
+
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumptionErrors" file="zdevelop/tests/test_consumer.py" line="352" name="test_raises_handled_custom_multiple" time="0.054"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: ERROR AROUND &apos;raise_value&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 377, in raise_value
+    raise ValueError(&quot;2.0&quot;)
+ValueError: 2.0
+
+INFO: ERROR AROUND &apos;raise_value&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 377, in raise_value
+    raise ValueError(&quot;2.0&quot;)
+ValueError: 2.0
+
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Task was destroyed but it is pending!
+task: &lt;Task pending name=&apos;Task-1354&apos; coro=&lt;sleep() done, defined at /opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/asyncio/tasks.py:630&gt; wait_for=&lt;Future cancelled&gt; cb=[_chain_future.&lt;locals&gt;._call_set_state() at /opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/asyncio/futures.py:367]&gt;
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestConsumptionErrors" file="zdevelop/tests/test_consumer.py" line="385" name="test_raise_handler_fails" time="0.037"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: ERROR AROUND &apos;raise_value&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 401, in raise_value
+    raise ValueError(&quot;2&quot;)
+ValueError: 2
+
+INFO: COULD NOT HANDLE &apos;ProcessorError&apos; WITH &apos;handle_route_error&apos;:
+
+Traceback (most recent call last):
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 401, in raise_value
+    raise ValueError(&quot;2&quot;)
+
+ValueError: 2
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 352, in processor_wrapper
+    await self._process_message_context(settings, message)
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 244, in _process_message_context
+    raise error
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 229, in _process_message_context
+    await self._process_message(settings, incoming)
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 195, in _process_message
+    raise ProcessorError(error, incoming, outgoing)
+
+spanconsumer._errors.ProcessorError: Message Processor Error: ValueError: 2
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 273, in _handle_processor_error
+    await handler(error, processor_settings)
+
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 397, in handle_route_error
+    raise ValueError(&quot;Well, fuck. Our last line of defence.&quot;)
+
+ValueError: Well, fuck. Our last line of defence.
+
+INFO: ERROR AROUND &apos;raise_value&apos;:
+
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 401, in raise_value
+    raise ValueError(&quot;2&quot;)
+ValueError: 2
+
+INFO: COULD NOT HANDLE &apos;ProcessorError&apos; WITH &apos;handle_route_error&apos;:
+
+Traceback (most recent call last):
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 191, in _process_message
+    await settings.worker(*args)  # type: ignore
+
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 401, in raise_value
+    raise ValueError(&quot;2&quot;)
+
+ValueError: 2
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 352, in processor_wrapper
+    await self._process_message_context(settings, message)
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 244, in _process_message_context
+    raise error
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 229, in _process_message_context
+    await self._process_message(settings, incoming)
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 195, in _process_message
+    raise ProcessorError(error, incoming, outgoing)
+
+spanconsumer._errors.ProcessorError: Message Processor Error: ValueError: 2
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 273, in _handle_processor_error
+    await handler(error, processor_settings)
+
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 397, in handle_route_error
+    raise ValueError(&quot;Well, fuck. Our last line of defence.&quot;)
+
+ValueError: Well, fuck. Our last line of defence.
+
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestTestClient" file="zdevelop/tests/test_consumer.py" line="410" name="test_delete_queues" time="0.084"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: RABBITMQ `test_results` QUEUE DECLARED
+test
+test
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestTestClient" file="zdevelop/tests/test_consumer.py" line="451" name="test_pull_empty_queue" time="0.540"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: RABBITMQ `test_results` QUEUE DECLARED
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestTestClient" file="zdevelop/tests/test_consumer.py" line="462" name="test_get_queue" time="0.042"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: RABBITMQ `test_results` QUEUE DECLARED
+INFO: RABBITMQ `test_results` QUEUE DECLARED
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestScribe" file="zdevelop/tests/test_consumer.py" line="487" name="test_runtime_error_no_connection" time="0.001"></testcase><testcase classname="zdevelop.tests.test_consumer.TestScribe" file="zdevelop/tests/test_consumer.py" line="497" name="test_get_queue_create_channel" time="0.012"><system-out>INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_queue` QUEUE DECLARED
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestScribe" file="zdevelop/tests/test_consumer.py" line="510" name="test_put_message_channel_create" time="0.013"><system-out>INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_queue` QUEUE DECLARED
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="527" name="test_auto_name" time="0.001"></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="533" name="test_double_consume_raises" time="0.001"></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="544" name="test_normal_startup" time="0.023"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="559" name="test_startup_task" time="0.013"><system-out>INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: PERFORMING TASK: task
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="573" name="test_startup_task_decorator" time="0.014"><system-out>INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: PERFORMING TASK: task
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="586" name="test_startup_task_multiple" time="0.023"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: PERFORMING TASK: task1
+INFO: PERFORMING TASK: task2
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="604" name="test_startup_task_multiple_failure" time="0.096"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: PERFORMING TASK: task1
+INFO: SIGNALING SHUTDOWN
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out><system-err>--- Logging error ---
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 535, in _main
+    self.loop.run_until_complete(self._start_up())
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/asyncio/base_events.py&quot;, line 612, in run_until_complete
+    return future.result()
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 478, in _start_up
+    await self._run_startup_tasks()
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 440, in _run_startup_tasks
+    await task(self)
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 616, in task1
+    raise ValueError(&quot;Startup Task hit an error.&quot;)
+ValueError: Startup Task hit an error.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 1081, in emit
+    msg = self.format(record)
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 925, in format
+    return fmt.format(record)
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 664, in format
+    record.message = record.getMessage()
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 369, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/threading.py&quot;, line 890, in _bootstrap
+    self._bootstrap_inner()
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/threading.py&quot;, line 932, in _bootstrap_inner
+    self.run()
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/threading.py&quot;, line 870, in run
+    self._target(*self._args, **self._kwargs)
+  File &quot;/home/vsts/work/1/s/spanconsumer/_test_client.py&quot;, line 51, in _run_consumer_in_thread
+    test_client.consumer.run()
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 570, in run
+    self._main()
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 537, in _main
+    self.logger.error(&quot;STARTUP FAILED&quot;, error)
+Message: &apos;STARTUP FAILED&apos;
+Arguments: (ValueError(&apos;Startup Task hit an error.&apos;),)
+--- Logging error ---
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 535, in _main
+    self.loop.run_until_complete(self._start_up())
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/asyncio/base_events.py&quot;, line 612, in run_until_complete
+    return future.result()
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 478, in _start_up
+    await self._run_startup_tasks()
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 440, in _run_startup_tasks
+    await task(self)
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 616, in task1
+    raise ValueError(&quot;Startup Task hit an error.&quot;)
+ValueError: Startup Task hit an error.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 1081, in emit
+    msg = self.format(record)
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 925, in format
+    return fmt.format(record)
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/site-packages/_pytest/logging.py&quot;, line 70, in format
+    return super().format(record)
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 664, in format
+    record.message = record.getMessage()
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 369, in getMessage
+    msg = msg % self.args
+TypeError: not all arguments converted during string formatting
+Call stack:
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/threading.py&quot;, line 890, in _bootstrap
+    self._bootstrap_inner()
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/threading.py&quot;, line 932, in _bootstrap_inner
+    self.run()
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/threading.py&quot;, line 870, in run
+    self._target(*self._args, **self._kwargs)
+  File &quot;/home/vsts/work/1/s/spanconsumer/_test_client.py&quot;, line 51, in _run_consumer_in_thread
+    test_client.consumer.run()
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 570, in run
+    self._main()
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 537, in _main
+    self.logger.error(&quot;STARTUP FAILED&quot;, error)
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 1463, in error
+    self._log(ERROR, msg, args, **kwargs)
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 1577, in _log
+    self.handle(record)
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 1587, in handle
+    self.callHandlers(record)
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 1649, in callHandlers
+    hdlr.handle(record)
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/logging/__init__.py&quot;, line 950, in handle
+    self.emit(record)
+  File &quot;/opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/site-packages/_pytest/logging.py&quot;, line 301, in emit
+    logging.StreamHandler.emit(self, record)
+Message: &apos;STARTUP FAILED&apos;
+Arguments: (ValueError(&apos;Startup Task hit an error.&apos;),)
+</system-err></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="631" name="test_shutdown_task" time="0.024"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: PERFORMING TASK: task
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="646" name="test_shutdown_task_decorator" time="0.024"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: PERFORMING TASK: task
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="660" name="test_shutdown_task_double" time="0.023"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: PERFORMING TASK: task1
+INFO: PERFORMING TASK: task2
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="679" name="test_shutdown_task_first_fails" time="0.024"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: PERFORMING TASK: task1
+INFO: ERROR DURING SHUTDOWN TASK (task1) ValueError: 
+STACK TRACE
+Traceback (most recent call last):
+  File &quot;/home/vsts/work/1/s/spanconsumer/_consumer.py&quot;, line 449, in _run_shutdown_tasks
+    await task(self)
+  File &quot;/home/vsts/work/1/s/zdevelop/tests/test_consumer.py&quot;, line 687, in task1
+    raise ValueError()
+ValueError
+
+INFO: PERFORMING TASK: task2
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="699" name="test_double_startup" time="0.045"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: Task was destroyed but it is pending!
+task: &lt;Task pending name=&apos;Task-1404&apos; coro=&lt;sleep() running at /opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/asyncio/tasks.py:648&gt; wait_for=&lt;Future cancelled&gt; cb=[_chain_future.&lt;locals&gt;._call_set_state() at /opt/hostedtoolcache/Python/3.8.1/x64/lib/python3.8/asyncio/futures.py:367]&gt;
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: SHUTDOWN SIGNAL RECEIVED
+INFO: SHUTTING DOWN &apos;Test Service&apos;
+INFO: CLOSING RABBITMQ CONNECTION
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CLEANING UP
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase><testcase classname="zdevelop.tests.test_consumer.TestLifeCycle" file="zdevelop/tests/test_consumer.py" line="731" name="test_keyboard_interrupt" time="0.028"><system-out>INFO: TEST CLIENT DELETING RABBITMQ QUEUES
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: Connection to amqp://guest:******@localhost:57018// closed. Reconnecting after 5 seconds.
+INFO: CONFIGURING LIFECYCLE
+INFO: STARTING UP &apos;Test Service&apos;
+INFO: CONNECTION ESTABLISHED TO RABBITMQ
+INFO: RABBITMQ CHANNEL ESTABLISHED
+INFO: RABBITMQ `test_tasks` QUEUE DECLARED
+INFO: RUNNING &apos;Test Service&apos;
+INFO: SENDING SHUTDOWN SIGNAL
+INFO: SIGNALING SHUTDOWN
+INFO: WORKERS DONE
+INFO: KEYBOARD INTERRUPT ISSUED
+INFO: CLEANING UP
+INFO: Task was destroyed but it is pending!
+task: &lt;Task cancelling name=&apos;Task-2097&apos; coro=&lt;SpanConsumer._shutdown() running at /home/vsts/work/1/s/spanconsumer/_consumer.py:484&gt; wait_for=&lt;Future finished result=True&gt;&gt;
+INFO: SHUT DOWN COMPLETE
+INFO: SHUTDOWN COMPLETE
+</system-out></testcase></testsuite></testsuites>
