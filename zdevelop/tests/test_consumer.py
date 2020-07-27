@@ -133,8 +133,7 @@ class TestConsumption:
             out_schema=Echo,
         )
         async def flip_value(
-            incoming: Incoming[bytes, Echo],
-            outgoing: Outgoing,
+            incoming: Incoming[bytes, Echo], outgoing: Outgoing,
         ):
             print("received value: ", incoming.media_loaded())
             outgoing.media = incoming.media_loaded()
