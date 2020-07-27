@@ -431,8 +431,8 @@ Output: ::
     Hello, Severus Snape
     Hello, Severus Snape
 
-Use Marshmallow Schemas
------------------------
+Use Schemas
+-----------
 
 `Marshmallow`_ Schemas can be used as both encoders and decoders. Lets alter our lazy
 greeter again.
@@ -508,6 +508,11 @@ Output: ::
 
 Schemas can also be used as an output. Output schemas invoke the
 `marshmallow.Schema.dump`_ method before serialization.
+
+.. note::
+
+    Protobuf message classes can now also be used as schemas for when incoming messages
+    are required to conform to a protobuf type.
 
 Queue Options
 -------------

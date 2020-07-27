@@ -1,7 +1,6 @@
 import aio_pika
 from typing import Optional, Callable, Any, Union, TypeVar, Generic, cast, Dict
 from dataclasses import dataclass, field
-from marshmallow import Schema
 
 from spantools import (
     decode_content,
@@ -11,6 +10,7 @@ from spantools import (
     convert_params_headers,
     EncoderIndexType,
     DecoderIndexType,
+    DataSchemaType,
 )
 
 
@@ -29,7 +29,7 @@ NOT_LOADED = _NotLoadedFlag()
 class Incoming(Generic[MediaType, LoadedType]):
     message: aio_pika.IncomingMessage
     """Message from RabbitMQ"""
-    schema: Optional[Schema]
+    schema: Optional[DataSchemaType]
     """Deserializer supplied to processor method."""
     _decoders: DecoderIndexType
     reject: bool = False
@@ -143,7 +143,7 @@ class Outgoing:
     """Mimetype to send body as."""
     headers: Dict[str, Any] = field(default_factory=dict)
     """Headers to add to message."""
-    schema: Optional[Union[Callable, Schema]] = None
+    schema: Optional[Union[Callable, DataSchemaType]] = None
     """Serializer supplied to processor method."""
 
     def generate_message(self) -> aio_pika.Message:
