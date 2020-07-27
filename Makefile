@@ -64,3 +64,8 @@ doc:
 	python setup.py build_sphinx -E
 	sleep 1
 	open ./zdocs/build/html/index.html
+
+.PHONY: proto
+proto:
+	protoc -I. --python_out=./spantools --mypy_out=./spantools ./test_proto/*.proto
+	make format

@@ -7,9 +7,8 @@ from typing import Optional, Type, Any
 # Need to import Literal from here for 3.7 compatibility.
 from typing_extensions import Literal
 from types import TracebackType
-from marshmallow import Schema
 
-from spantools import MimeTypeTolerant
+from spantools import MimeTypeTolerant, DataSchemaType
 
 from ._incoming_outgoing import NOT_LOADED, Incoming
 from ._scribe import SpanScribe
@@ -94,7 +93,7 @@ class TestClient:
     def pull_message(
         self,
         routing_key: str,
-        schema: Optional[Schema] = None,
+        schema: Optional[DataSchemaType] = None,
         max_empty_retries: int = 0,
     ) -> Incoming:
         """
@@ -167,15 +166,15 @@ class TestClient:
         exc_val: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> Literal[False]:
-        self.consumer.logger.info(f"SENDING SHUTDOWN SIGNAL")
+        self.consumer.logger.info("SENDING SHUTDOWN SIGNAL")
         self.consumer.signal_shutdown()
 
         with self.consumer.lifecycle.worker_lock:
             pass
 
-        self.consumer.logger.info(f"WORKERS DONE")
+        self.consumer.logger.info("WORKERS DONE")
         self.consumer.lifecycle.event_shutdown_complete.wait()
-        self.consumer.logger.info(f"SHUTDOWN COMPLETE")
+        self.consumer.logger.info("SHUTDOWN COMPLETE")
 
         return False
 

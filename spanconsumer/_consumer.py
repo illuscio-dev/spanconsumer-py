@@ -5,8 +5,7 @@ import logging
 import sys
 import uuid
 import traceback
-from marshmallow import Schema
-from spantools import EncoderType, DecoderType, MimeTypeTolerant
+from spantools import EncoderType, DecoderType, MimeTypeTolerant, DataSchemaType
 from typing import Dict, Callable, Optional, Union, List, Tuple, cast
 from dataclasses import dataclass, field
 
@@ -288,8 +287,8 @@ class SpanConsumer:
         *,
         in_key: str,
         out_key: Optional[str] = None,
-        in_schema: Optional[Schema] = None,
-        out_schema: Optional[Schema] = None,
+        in_schema: Optional[DataSchemaType] = None,
+        out_schema: Optional[DataSchemaType] = None,
         queue_options: Optional[QueueOptions] = None,
         processing_options: Optional[ProcessingOptions] = None,
     ) -> Callable:
@@ -509,7 +508,7 @@ class SpanConsumer:
         self.loop.close()
 
     def _main(self) -> None:
-        self.logger.info(f"CONFIGURING LIFECYCLE")
+        self.logger.info("CONFIGURING LIFECYCLE")
 
         # Get the current event loop. NOTE: this loop will be closed upon service exit.
         loop = asyncio.get_event_loop()
@@ -556,12 +555,12 @@ class SpanConsumer:
         try:
             self.loop.run_forever()
         except KeyboardInterrupt:
-            self.logger.info(f"KEYBOARD INTERRUPT ISSUED")
+            self.logger.info("KEYBOARD INTERRUPT ISSUED")
         finally:
             # At the end of the shutdown, we can clean up and close the loop.
             with self.lifecycle.lock_shutdown:
                 self._clean_up_loop()
-                self.logger.info(f"SHUT DOWN COMPLETE")
+                self.logger.info("SHUT DOWN COMPLETE")
 
     def run(self) -> None:
         """Run the service."""

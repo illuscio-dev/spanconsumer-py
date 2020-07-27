@@ -53,7 +53,7 @@ def register_venv(activate_path: pathlib.Path, lib_name: str, py_version: str) -
 
     command = f'alias {bash_alias}=\'cd "{lib_path}";source "{activate_path}"\''
 
-    bash_rc_path = pathlib.Path("~/.bash_profile").expanduser()
+    bash_rc_path = pathlib.Path("~/.bash_aliases").expanduser()
     bash_rc_text = bash_rc_path.read_text()
 
     if command in bash_rc_text:

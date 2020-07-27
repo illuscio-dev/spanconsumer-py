@@ -1,6 +1,6 @@
-from marshmallow import Schema
 from typing import Dict, Any, Optional
 from dataclasses import dataclass, field, asdict
+from spantools import DataSchemaType
 
 
 from ._types import WrappedProcessorType, ProcessorType
@@ -97,9 +97,9 @@ class ProcessorSettings:
     """Rabbit routing key messages are pulled from."""
     out_key: Optional[str]
     """Rabbit routing key outgoing are sent to."""
-    in_schema: Optional[Schema]
+    in_schema: Optional[DataSchemaType]
     """Function or schema to deserialize incoming message body."""
-    out_schema: Optional[Schema]
+    out_schema: Optional[DataSchemaType]
     """Function or schema to deserialize outgoing message body."""
     processor: WrappedProcessorType = field(init=False)
     """Processor function to execute."""

@@ -11,7 +11,6 @@ from collections import Counter
 from typing import List, Dict, Any
 
 from dataclasses import dataclass
-from unittest import mock
 
 from spantools import MimeType
 
@@ -26,6 +25,8 @@ from spanconsumer import (
     QueueOptions,
     ProcessingOptions,
 )
+
+from proto import Echo
 
 
 class TestConsumption:
@@ -86,6 +87,25 @@ class TestConsumption:
 
         assert data["key"] == Name("Billy", "Peake")
 
+    def test_basic_consume_proto(self, test_consumer: SpanConsumer, input_queue_name):
+        data = dict(key=None)
+
+        @test_consumer.processor(in_key=input_queue_name, in_schema=Echo)
+        async def echo_handle(incoming: Incoming):
+            print("received value: ", incoming.media_loaded())
+            data["key"] = incoming.media_loaded()
+            data["mimetype"] = incoming.mimetype
+
+        assert data["key"] is None
+
+        with test_consumer.test_client(delete_queues=True) as client:
+            client.put_message(input_queue_name, message=Echo(message="HELLO!!!"))
+
+        received = data["key"]
+        assert isinstance(received, Echo)
+        assert received.message == "HELLO!!!"
+        assert data["mimetype"] is MimeType.PROTO
+
     def test_basic_pass_through(
         self, test_consumer: SpanConsumer, input_queue_name, output_queue_name
     ):
@@ -102,6 +122,32 @@ class TestConsumption:
             body = incoming.message.body.decode()
             assert body == f"processed: test value"
             assert incoming.media_loaded() == f"processed: test value"
+
+    def test_proto_pass_through(
+        self, test_consumer: SpanConsumer, input_queue_name, output_queue_name
+    ):
+        @test_consumer.processor(
+            in_key=input_queue_name,
+            out_key=output_queue_name,
+            in_schema=Echo,
+            out_schema=Echo,
+        )
+        async def flip_value(
+            incoming: Incoming[bytes, Echo], outgoing: Outgoing,
+        ):
+            print("received value: ", incoming.media_loaded())
+            outgoing.media = incoming.media_loaded()
+
+        with test_consumer.test_client(delete_queues=True) as client:
+            client.put_message(input_queue_name, Echo(message="ECHO!!!!"))
+
+            output_sent = client.pull_message(output_queue_name, schema=Echo)
+
+            body = output_sent.media_loaded()
+            assert isinstance(body, Echo)
+            assert body.message == f"ECHO!!!!"
+            assert output_sent.mimetype is MimeType.PROTO
+            assert output_sent.message.content_type == "application/protobuf"
 
     def test_return_message(
         self, test_consumer: SpanConsumer, input_queue_name: str, output_queue_name: str

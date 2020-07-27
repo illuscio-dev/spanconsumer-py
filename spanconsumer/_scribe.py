@@ -4,7 +4,6 @@ import aiormq
 import asyncio
 import copy
 from dataclasses import asdict as dataclass_asdict
-from marshmallow import Schema
 from typing import Optional, Any, Dict
 from spantools import (
     MimeTypeTolerant,
@@ -15,6 +14,7 @@ from spantools import (
     EncoderType,
     DecoderType,
     MimeType,
+    DataSchemaType,
 )
 
 from ._errors import ConfirmOutgoingError
@@ -139,7 +139,7 @@ class SpanScribe:
     async def pull_message(
         self,
         routing_key: str,
-        schema: Optional[Schema] = None,
+        schema: Optional[DataSchemaType] = None,
         max_empty_retries: int = 0,
         queue_options: Optional[QueueOptions] = None,
     ) -> Incoming:
@@ -184,7 +184,7 @@ class SpanScribe:
         message: Any,
         *,
         headers: Optional[Dict[str, Any]] = None,
-        schema: Optional[Schema] = None,
+        schema: Optional[DataSchemaType] = None,
         mimetype: MimeTypeTolerant = None,
         message_kwargs: Optional[Dict[str, Any]] = None,
         queue_options: Optional[QueueOptions] = None,
@@ -223,6 +223,7 @@ class SpanScribe:
         # needed.
         await self.get_queue(routing_key, queue_options=queue_options)
 
+        assert self.channel.default_exchange is not None
         result = await self.channel.default_exchange.publish(
             message=output_message, routing_key=routing_key
         )
