@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>spanconsumer._scribe &mdash; spanconsumer 0.3.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> spanconsumer
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart_scribe.html">Quick Start - Scribe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart_consumer.html">Quick Start - Consumer Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_doc.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">spanconsumer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>spanconsumer._scribe</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for spanconsumer._scribe</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">aio_pika</span>
+<span class="kn">import</span> <span class="nn">aiormq</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">asdict</span> <span class="k">as</span> <span class="n">dataclass_asdict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">spantools</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MimeTypeTolerant</span><span class="p">,</span>
+    <span class="n">DecoderIndexType</span><span class="p">,</span>
+    <span class="n">EncoderIndexType</span><span class="p">,</span>
+    <span class="n">DEFAULT_DECODERS</span><span class="p">,</span>
+    <span class="n">DEFAULT_ENCODERS</span><span class="p">,</span>
+    <span class="n">EncoderType</span><span class="p">,</span>
+    <span class="n">DecoderType</span><span class="p">,</span>
+    <span class="n">MimeType</span><span class="p">,</span>
+    <span class="n">DataSchemaType</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">._errors</span> <span class="kn">import</span> <span class="n">ConfirmOutgoingError</span>
+<span class="kn">from</span> <span class="nn">._incoming_outgoing</span> <span class="kn">import</span> <span class="n">Incoming</span><span class="p">,</span> <span class="n">Outgoing</span>
+<span class="kn">from</span> <span class="nn">._configuration</span> <span class="kn">import</span> <span class="n">QueueOptions</span><span class="p">,</span> <span class="n">ConnectionSettings</span>
+
+
+<div class="viewcode-block" id="SpanScribe"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanScribe">[docs]</a><span class="k">class</span> <span class="nc">SpanScribe</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Core class for interacting with a aio_pika connection. This class is intended to</span>
+<span class="sd">    be used by producers, and also supplies the underlying logic for</span>
+<span class="sd">    :class:`SpanConsumer`. It allows both producers and consumers to share the same</span>
+<span class="sd">    underlying logic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">settings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConnectionSettings</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param settings: Settings class containing RabbitMQ connection info. If</span>
+<span class="sd">            ``None``, default RabbitMQ settings are assumed.</span>
+<span class="sd">        :param loop: Event loop to use in connection. If None, current event loop is</span>
+<span class="sd">            used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">settings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">settings</span> <span class="o">=</span> <span class="n">ConnectionSettings</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">loop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">:</span> <span class="n">ConnectionSettings</span> <span class="o">=</span> <span class="n">settings</span>
+        <span class="sd">&quot;&quot;&quot;Settings class passed to init.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="n">loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">:</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">Connection</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">:</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">RobustChannel</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+        <span class="sd">&quot;&quot;&quot;Async event loop.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">Queue</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_encoders</span><span class="p">:</span> <span class="n">EncoderIndexType</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">DEFAULT_ENCODERS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_decoders</span><span class="p">:</span> <span class="n">DecoderIndexType</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">DEFAULT_DECODERS</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpanScribe.connect_to_rabbit"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanScribe.connect_to_rabbit">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">connect_to_rabbit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">Connection</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Try forever to connect to rabbit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">root</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="k">await</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">connect_robust</span><span class="p">(</span>
+                    <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+                    <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+                    <span class="n">login</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">login</span><span class="p">,</span>
+                    <span class="n">password</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+                    <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">aiormq</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IncompatibleProtocolError</span><span class="p">,</span> <span class="ne">ConnectionError</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;RABBITMQ CONNECTION FAILED. RETRYING IN 1S&quot;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CONNECTION ESTABLISHED TO RABBITMQ&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span></div>
+
+<div class="viewcode-block" id="SpanScribe.close_connection"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanScribe.close_connection">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Close RabbitMQ connection and clean up settings.&quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SpanScribe.get_channel"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanScribe.get_channel">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">RobustChannel</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Once Connected, get channel&quot;&quot;&quot;</span>
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">root</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">channel</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Connection is not established&quot;</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RABBITMQ CHANNEL ESTABLISHED&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span></div>
+
+<div class="viewcode-block" id="SpanScribe.get_queue"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanScribe.get_queue">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_queue</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">routing_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">queue_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueueOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">Queue</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set up worker queue or get previously declared one using this connection.</span>
+
+<span class="sd">        :param routing_key: of queue.</span>
+<span class="sd">        :param queue_options: Options for pika queue creation.</span>
+
+<span class="sd">        :return: Requested queue.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">[</span><span class="n">routing_key</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">queue_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">queue_options</span> <span class="o">=</span> <span class="n">QueueOptions</span><span class="p">()</span>
+
+        <span class="n">queue_kwargs</span> <span class="o">=</span> <span class="n">dataclass_asdict</span><span class="p">(</span><span class="n">queue_options</span><span class="p">)</span>
+
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">root</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">queue</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">declare_queue</span><span class="p">(</span><span class="n">routing_key</span><span class="p">,</span> <span class="o">**</span><span class="n">queue_kwargs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Connection is not established&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_channel</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RABBITMQ `</span><span class="si">{</span><span class="n">routing_key</span><span class="si">}</span><span class="s2">` QUEUE DECLARED&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">[</span><span class="n">routing_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">queue</span>
+        <span class="k">return</span> <span class="n">queue</span></div>
+
+<div class="viewcode-block" id="SpanScribe.pull_message"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanScribe.pull_message">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">pull_message</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">routing_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataSchemaType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_empty_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">queue_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueueOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Incoming</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pull and deserialize message from RabbitMQ.</span>
+
+<span class="sd">        :param routing_key: Queue to pull from.</span>
+<span class="sd">        :param schema: Custom Schema or function to use when deserializing body.</span>
+<span class="sd">        :param max_empty_retries: Maximum time to retry an empty queue. 0.5 seconds</span>
+<span class="sd">            waited between each retry.</span>
+<span class="sd">        :param queue_options: Options for pika queue creation.</span>
+
+<span class="sd">        :return: Message, deserialized body.</span>
+
+<span class="sd">        This method should NOT be used as a general way of fetching messages in</span>
+<span class="sd">        production, but is included for testing purposes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queue</span><span class="p">(</span><span class="n">routing_key</span><span class="p">,</span> <span class="n">queue_options</span><span class="o">=</span><span class="n">queue_options</span><span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">tries</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">message</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tries</span> <span class="o">&lt;=</span> <span class="n">max_empty_retries</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">fail</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">message</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+            <span class="n">tries</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">message</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">QueueEmpty</span>
+
+        <span class="n">incoming</span><span class="p">:</span> <span class="n">Incoming</span> <span class="o">=</span> <span class="n">Incoming</span><span class="p">(</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">,</span> <span class="n">_decoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_decoders</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">incoming</span></div>
+
+<div class="viewcode-block" id="SpanScribe.put_message"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanScribe.put_message">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">put_message</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">routing_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataSchemaType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mimetype</span><span class="p">:</span> <span class="n">MimeTypeTolerant</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">message_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">queue_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueueOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">aiormq</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">ConfirmationFrameType</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Serialize and publish message to default exchange.</span>
+
+<span class="sd">        :param routing_key: Queue to publish to.</span>
+<span class="sd">        :param message: aio_pika.Message or body to be serialized into a message.</span>
+<span class="sd">            Default messages are created in PERSISTENT delivery mode.</span>
+<span class="sd">        :param headers: Headers to include in message.</span>
+<span class="sd">        :param schema: Custom schema or function to use when serializing body.</span>
+<span class="sd">        :param mimetype: Format to encode message.</span>
+<span class="sd">        :param message_kwargs: Passed to ``aio_pika.Message`` when generating a message.</span>
+<span class="sd">        :param queue_options: Options for pika queue creation.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">Outgoing</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">message_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">message_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">headers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">headers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+            <span class="n">message</span> <span class="o">=</span> <span class="n">Outgoing</span><span class="p">(</span>
+                <span class="n">_encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_encoders</span><span class="p">,</span>
+                <span class="n">media</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
+                <span class="n">message_kwargs</span><span class="o">=</span><span class="n">message_kwargs</span><span class="p">,</span>
+                <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span>
+                <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+                <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">output_message</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">generate_message</span><span class="p">()</span>
+
+        <span class="c1"># Declare the queue if it doesnt exist. This will also create the channel if</span>
+        <span class="c1"># needed.</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queue</span><span class="p">(</span><span class="n">routing_key</span><span class="p">,</span> <span class="n">queue_options</span><span class="o">=</span><span class="n">queue_options</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">default_exchange</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">default_exchange</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">output_message</span><span class="p">,</span> <span class="n">routing_key</span><span class="o">=</span><span class="n">routing_key</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConfirmOutgoingError</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="SpanScribe.register_mimetype"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.SpanScribe.register_mimetype">[docs]</a>    <span class="k">def</span> <span class="nf">register_mimetype</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">:</span> <span class="n">MimeTypeTolerant</span><span class="p">,</span> <span class="n">encoder</span><span class="p">:</span> <span class="n">EncoderType</span><span class="p">,</span> <span class="n">decoder</span><span class="p">:</span> <span class="n">DecoderType</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Registers encoder and decoder function for a given mimetype.</span>
+
+<span class="sd">        :param mimetype: to register for ex: ``&#39;text/csv&#39;``.</span>
+<span class="sd">        :param encoder: Encodes mimetype data to binary.</span>
+<span class="sd">        :param decoder: Decodes mimetype data to binary.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mimetype</span> <span class="o">=</span> <span class="n">MimeType</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">mimetype</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_encoders</span><span class="p">[</span><span class="n">mimetype</span><span class="p">]</span> <span class="o">=</span> <span class="n">encoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_decoders</span><span class="p">[</span><span class="n">mimetype</span><span class="p">]</span> <span class="o">=</span> <span class="n">decoder</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright &#39;2018, Illuscio&#39;
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

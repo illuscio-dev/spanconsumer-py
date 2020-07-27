@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>spanconsumer._configuration &mdash; spanconsumer 0.3.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> spanconsumer
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart_scribe.html">Quick Start - Scribe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart_consumer.html">Quick Start - Consumer Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_doc.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">spanconsumer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>spanconsumer._configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for spanconsumer._configuration</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">asdict</span>
+<span class="kn">from</span> <span class="nn">spantools</span> <span class="kn">import</span> <span class="n">DataSchemaType</span>
+
+
+<span class="kn">from</span> <span class="nn">._types</span> <span class="kn">import</span> <span class="n">WrappedProcessorType</span><span class="p">,</span> <span class="n">ProcessorType</span>
+
+
+<div class="viewcode-block" id="ConnectionSettings"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.ConnectionSettings">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ConnectionSettings</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Holds rabbitMQ connection settings for :class:`Scribe`. Default to default RabbitMQ</span>
+<span class="sd">    settings.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Rabbit Server Host.&quot;&quot;&quot;</span>
+    <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5672</span>
+    <span class="sd">&quot;&quot;&quot;Rabbit Server Port.&quot;&quot;&quot;</span>
+    <span class="n">login</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;guest&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Rabbit Server Login.&quot;&quot;&quot;</span>
+    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;guest&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Rabbit Server Password.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="QueueOptions"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.QueueOptions">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">QueueOptions</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Aio-Pika queue settings. Passed to ``aiopika.channel.declare_queue()`` as</span>
+<span class="sd">    kwargs.&quot;&quot;&quot;</span>
+
+    <span class="n">durable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="sd">&quot;&quot;&quot;Whether the queue should store messages on disk.&quot;&quot;&quot;</span>
+    <span class="n">passive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="sd">&quot;&quot;&quot;Only check to see if queue exists.&quot;&quot;&quot;</span>
+    <span class="n">auto_delete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="sd">&quot;&quot;&quot;Delete queue when empty.&quot;&quot;&quot;</span>
+    <span class="n">arguments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;Additional arguments to pass to the broker.&quot;&quot;&quot;</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;Timout for queue declaration.&quot;&quot;&quot;</span>
+    <span class="n">robust</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="sd">&quot;&quot;&quot;See aio-pika documentation.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ProcessingOptions"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.ProcessingOptions">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ProcessingOptions</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aio-Pika message handler settings. Passed to</span>
+<span class="sd">    ``aiopika.IncomingMessage.__aenter__()`` context as kwargs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">requeue</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="sd">&quot;&quot;&quot;Requeue message on failure.&quot;&quot;&quot;</span>
+    <span class="n">reject_on_redelivered</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="sd">&quot;&quot;&quot;Do no requeue if the message has already been requeued once.&quot;&quot;&quot;</span>
+    <span class="n">ignore_processed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="sd">&quot;&quot;&quot;Ignore message if it has been processed.&quot;&quot;&quot;</span>
+    <span class="n">max_delivery_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ``x-delivery-count`` header value to stop re-queueing failed messages.</span>
+
+<span class="sd">    ``-1`` is interpreted as no limit.</span>
+
+<span class="sd">    NOTE: RabbitMQ Delivery counts start at ``0``. The second time the message is</span>
+<span class="sd">    delivered it&#39;s delivery count is ``2``</span>
+
+<span class="sd">    NOTE: This option has no effect on classic queues. Only quorum queues track delivery</span>
+<span class="sd">    count.</span>
+
+<span class="sd">    NOTE: This option has no effect if ``requeue`` is ``False``.</span>
+
+<span class="sd">    NOTE: This option is not passed to aiopika, but handled directly by spanconsumer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Kwargs used for aio pika message context. Not for setting by user.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Have to make a dummy value to use as-dict or the non-existent attr throws</span>
+        <span class="c1"># an error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># max_delivery_count is not an aio-pika setting, but instead handled by the</span>
+        <span class="c1"># consumer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;max_delivery_count&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;kwargs&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProcessorSettings"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.ProcessorSettings">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ProcessorSettings</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Settings for a decorated route processor function.&quot;&quot;&quot;</span>
+
+    <span class="n">consumer</span><span class="p">:</span> <span class="s2">&quot;SpanConsumer&quot;</span>
+    <span class="sd">&quot;&quot;&quot;The parent consumer to run the processor.&quot;&quot;&quot;</span>
+    <span class="n">worker</span><span class="p">:</span> <span class="n">ProcessorType</span>
+    <span class="sd">&quot;&quot;&quot;The function passed into the decorator.&quot;&quot;&quot;</span>
+    <span class="n">in_key</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;Rabbit routing key messages are pulled from.&quot;&quot;&quot;</span>
+    <span class="n">out_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Rabbit routing key outgoing are sent to.&quot;&quot;&quot;</span>
+    <span class="n">in_schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataSchemaType</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Function or schema to deserialize incoming message body.&quot;&quot;&quot;</span>
+    <span class="n">out_schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataSchemaType</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Function or schema to deserialize outgoing message body.&quot;&quot;&quot;</span>
+    <span class="n">processor</span><span class="p">:</span> <span class="n">WrappedProcessorType</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Processor function to execute.&quot;&quot;&quot;</span>
+    <span class="n">queue_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueueOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;Aio-Pika queue options.&quot;&quot;&quot;</span>
+    <span class="n">processing_options</span><span class="p">:</span> <span class="n">ProcessingOptions</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">ProcessingOptions</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Aio-Pika message processing options.&quot;&quot;&quot;</span></div>
+
+
+<span class="n">typing_help</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">if</span> <span class="n">typing_help</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">._consumer</span> <span class="kn">import</span> <span class="n">SpanConsumer</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright &#39;2018, Illuscio&#39;
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

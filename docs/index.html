@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>SpanConsumer &mdash; spanconsumer 0.3.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick Start - Scribe" href="quickstart_scribe.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home" alt="Documentation Home"> spanconsumer
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart_scribe.html">Quick Start - Scribe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart_consumer.html">Quick Start - Consumer Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">spanconsumer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>SpanConsumer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-spanconsumer"></span><div class="section" id="spanconsumer">
+<h1>SpanConsumer<a class="headerlink" href="#spanconsumer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Python 3.7+</p></li>
+<li><p>SpanConsumer currently only supports <a class="reference external" href="https://www.rabbitmq.com/">RabbitMQ</a> as its messaging backend, as it is
+built on top of <a class="reference external" href="https://aio-pika.readthedocs.io/en/latest/">aio_pika</a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart_scribe.html">Quick Start - Scribe</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_scribe.html#rabbitmq-connection-settings">RabbitMQ Connection Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_scribe.html#start-scribe-connection">Start Scribe Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_scribe.html#put-a-message">Put a Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_scribe.html#pull-a-message">Pull a Message</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_scribe.html#use-a-marshmallow-schema">Use a Marshmallow Schema</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart_consumer.html">Quick Start - Consumer Service</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#set-up-a-service">Set Up a Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#run-the-service">Run the Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#test-the-service">Test The Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#decode-message-bodies-automatically">Decode Message Bodies Automatically</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#content-type-encoding">Content-Type Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#content-type-sniffing">Content-Type Sniffing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#content-type-handlers">Content-Type Handlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#see-errors">See Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#handle-errors">Handle Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#send-results-to-an-output-queue">Send Results to an Output Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#use-schemas">Use Schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#queue-options">Queue Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#processing-options">Processing Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart_consumer.html#run-startup-shutdown-tasks">Run Startup / Shutdown Tasks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#connectionsettings">ConnectionSettings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#scribe">Scribe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#spanconsumer">SpanConsumer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#testclient">TestClient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#incoming-outgoing">Incoming / Outgoing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#queue-options">Queue Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#processing-options">Processing Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#processor-settings">Processor Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#mimetype">MimeType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">spanscribe</span></code> is an async messaging and consumer library heavily inspired by the API
+design of <a class="reference external" href="https://python-responder.org/en/latest/">responder</a> and <a class="reference external" href="https://illuscio-dev-spanreed-py.readthedocs-hosted.com/en/latest/">spanserver</a>. It is intended to make designing consumer /
+worker micro-services quick and easy.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="quickstart_scribe.html" class="btn btn-neutral float-right" title="Quick Start - Scribe" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright &#39;2018, Illuscio&#39;
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
