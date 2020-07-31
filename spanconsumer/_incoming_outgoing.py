@@ -42,7 +42,13 @@ class Incoming(Generic[MediaType, LoadedType]):
     @property
     def mimetype(self) -> MimeTypeTolerant:
         if self._mimetype is NOT_LOADED:
-            mimetype: MimeTypeTolerant = self.headers.get("Content-Type")
+
+            # Check the builtin content type first.
+            mimetype: MimeTypeTolerant = self.message.content_type
+            if not mimetype:
+                # if that is none, check the custom header.
+                mimetype = self.headers.get("Content-Type")
+
             if mimetype:
                 try:
                     mimetype = MimeType.from_name(mimetype)

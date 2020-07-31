@@ -533,7 +533,7 @@ class SpanConsumer:
             self.logger.info(f"STARTING UP '{self.settings.name}'")
             self.loop.run_until_complete(self._start_up())
         except BaseException as error:
-            self.logger.error("STARTUP FAILED", error)
+            self.logger.error("STARTUP FAILED: " + str(error))
             # Signal there was an error during startup.
             self.lifecycle.event_startup_error.set()
         finally:
