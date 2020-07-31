@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>spanconsumer._test_client &mdash; spanconsumer 0.3.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> spanconsumer
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart_scribe.html">Quick Start - Scribe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart_consumer.html">Quick Start - Consumer Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_doc.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">spanconsumer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>spanconsumer._test_client</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for spanconsumer._test_client</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">aio_pika</span>
+<span class="kn">import</span> <span class="nn">aiormq</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="c1"># Need to import Literal from here for 3.7 compatibility.</span>
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">TracebackType</span>
+
+<span class="kn">from</span> <span class="nn">spantools</span> <span class="kn">import</span> <span class="n">MimeTypeTolerant</span><span class="p">,</span> <span class="n">DataSchemaType</span>
+
+<span class="kn">from</span> <span class="nn">._incoming_outgoing</span> <span class="kn">import</span> <span class="n">NOT_LOADED</span><span class="p">,</span> <span class="n">Incoming</span>
+<span class="kn">from</span> <span class="nn">._scribe</span> <span class="kn">import</span> <span class="n">SpanScribe</span>
+
+
+<div class="viewcode-block" id="TestClient"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.TestClient">[docs]</a><span class="k">class</span> <span class="nc">TestClient</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Context manager for handling lifecycle of a consumer service in it&#39;s own thread when</span>
+<span class="sd">    running tests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">consumer</span><span class="p">:</span> <span class="s2">&quot;SpanConsumer&quot;</span><span class="p">,</span> <span class="n">delete_queues</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="p">:</span> <span class="s2">&quot;SpanConsumer&quot;</span> <span class="o">=</span> <span class="n">consumer</span>
+        <span class="sd">&quot;&quot;&quot;Consumer object the test client was spawned from.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_thread</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span>
+        <span class="sd">&quot;&quot;&quot;Thread that the consumer process is being run in.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flag_delete_queues</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">delete_queues</span>
+        <span class="sd">&quot;&quot;&quot;Whether to delete the services queues on start.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asyncio loop shared with the consumer in another thread. This loop needs to</span>
+<span class="sd">        be accessed in a thread safe way since the consumer is being run in another</span>
+<span class="sd">        thread.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">loop</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">scribe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SpanScribe</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">scribe</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_run_consumer_in_thread</span><span class="p">(</span>
+        <span class="n">test_client</span><span class="p">:</span> <span class="s2">&quot;TestClient&quot;</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Function that the consumer thread runs.&quot;&quot;&quot;</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">test_client</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TestClient.get_queue"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.TestClient.get_queue">[docs]</a>    <span class="k">def</span> <span class="nf">get_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">aio_pika</span><span class="o">.</span><span class="n">Queue</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Non-async way to get one of the consumer&#39;s queues for testing.</span>
+
+<span class="sd">        :param name: Name of queue to fetch.</span>
+<span class="sd">        :return: Requested queue.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coroutine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">get_queue</span><span class="p">(</span><span class="n">routing_key</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run_coroutine_threadsafe</span><span class="p">(</span><span class="n">coroutine</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestClient.put_message"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.TestClient.put_message">[docs]</a>    <span class="k">def</span> <span class="nf">put_message</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">routing_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">message</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">NOT_LOADED</span><span class="p">,</span>
+        <span class="n">mimetype</span><span class="p">:</span> <span class="n">MimeTypeTolerant</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">aiormq</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">ConfirmationFrameType</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Non-async way to put a message to the consumer&#39;s queue.</span>
+
+<span class="sd">        :param routing_key: key to put message to</span>
+<span class="sd">        :param message: body of message to send or full message object. Bodies will be</span>
+<span class="sd">            automatically serialized if possible.</span>
+<span class="sd">        :param kwargs: if only the body is supplied, other keyword arguments can go</span>
+<span class="sd">            here.</span>
+<span class="sd">        :return: Confirmation from aio_pika.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">processor_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">queue_processors</span><span class="p">[</span><span class="n">routing_key</span><span class="p">]</span>
+
+        <span class="n">coroutine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">put_message</span><span class="p">(</span>
+            <span class="n">routing_key</span><span class="o">=</span><span class="n">routing_key</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
+            <span class="n">mimetype</span><span class="o">=</span><span class="n">mimetype</span><span class="p">,</span>
+            <span class="n">schema</span><span class="o">=</span><span class="n">processor_settings</span><span class="o">.</span><span class="n">in_schema</span><span class="p">,</span>
+            <span class="n">message_kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run_coroutine_threadsafe</span><span class="p">(</span><span class="n">coroutine</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestClient.pull_message"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.TestClient.pull_message">[docs]</a>    <span class="k">def</span> <span class="nf">pull_message</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">routing_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataSchemaType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_empty_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Incoming</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Non-async way to pull message from the consumer&#39;s queue.</span>
+
+<span class="sd">        :param routing_key: name of queue to pull from.</span>
+<span class="sd">        :param schema: to deserialize message body.</span>
+<span class="sd">        :param max_empty_retries: number of times to retry an empty queue. Retries are</span>
+<span class="sd">            attempted once every 0.5 seconds.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coroutine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scribe</span><span class="o">.</span><span class="n">pull_message</span><span class="p">(</span>
+            <span class="n">routing_key</span><span class="o">=</span><span class="n">routing_key</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">,</span> <span class="n">max_empty_retries</span><span class="o">=</span><span class="n">max_empty_retries</span>
+        <span class="p">)</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run_coroutine_threadsafe</span><span class="p">(</span><span class="n">coroutine</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TestClient&quot;</span><span class="p">:</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_delete_queues</span><span class="p">:</span>
+            <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_queues</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_run_consumer_in_thread</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c1"># We need to clear the last lifecycle so we don&#39;t his a race condition where</span>
+        <span class="c1"># we are checking old events.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_startup_complete</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="TestClient.delete_queues"><a class="viewcode-back" href="../../api_doc.html#spanconsumer.TestClient.delete_queues">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">delete_queues</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Deletes queues when exiting context block.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;TEST CLIENT DELETING RABBITMQ QUEUES&quot;</span><span class="p">)</span>
+
+        <span class="c1"># We&#39;re going to boot up a temporary scribe so we don&#39;t need to start an entire</span>
+        <span class="c1"># consumer to delete the queues.</span>
+        <span class="n">scribe</span> <span class="o">=</span> <span class="n">SpanScribe</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">connection</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">connect_to_rabbit</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">get_channel</span><span class="p">()</span>
+
+        <span class="c1"># Try to delete the queues</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">setting</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">queue_processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">queue_delete</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">in_key</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">setting</span><span class="o">.</span><span class="n">out_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">queue_delete</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">out_key</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># Close the scribe on any errors</span>
+            <span class="k">await</span> <span class="n">scribe</span><span class="o">.</span><span class="n">close_connection</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">exc_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]],</span>
+        <span class="n">exc_val</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
+        <span class="n">exc_tb</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TracebackType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SENDING SHUTDOWN SIGNAL&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">signal_shutdown</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">worker_lock</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WORKERS DONE&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">event_shutdown_complete</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SHUTDOWN COMPLETE&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="n">typing_helper</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">if</span> <span class="n">typing_helper</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">._consumer</span> <span class="kn">import</span> <span class="n">SpanConsumer</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright &#39;2018, Illuscio&#39;
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
